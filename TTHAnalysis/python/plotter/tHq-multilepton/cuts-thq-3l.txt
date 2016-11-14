@@ -21,3 +21,4 @@ ele conv cuts : (abs(LepGood1_pdgId)!=11 || (LepGood1_convVeto && LepGood1_lostH
 2j            : nJet25>=2
 2b1B          : nBJetLoose25 >= 1
 #2bveto        : nBJetMedium25 < 2
+Fwdjet	       : maxEtaJet25 >= 0

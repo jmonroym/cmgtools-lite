@@ -171,8 +171,9 @@ def main(args, options):
     allcuts += "LepGood_conePt[iF_Recl[1]]>10"
     allcuts += "LepGood_conePt[iF_Recl[2]]>10"
     allcuts += "nJet25_Recl >= 2"
-    allcuts += "nBJetMedium25 >= 1" # FIXME: use nBJetMedium25_Recl instead
-    # allcuts += "nBJetLoose25_Recl >= 1"
+    #allcuts += "nBJetMedium25 >= 1" # use nBJetMedium25 this if non recleanind friend trees are used
+    allcuts += "nBJetMedium25_Recl >= 1" # use nBJetMedium25_Recl if recleanind friend trees are used
+    allcuts += "nBJetLoose25_Recl >= 2"
     allcuts += "maxEtaJet25 >= 0"
 
     # Define the variables to be used:
@@ -187,7 +188,11 @@ def main(args, options):
         ("Lep3Pt := LepGood_conePt[iF_Recl[2]]", "F"),
         ("minDRll", "F"),
         ("lepCharge := LepGood_charge[iF_Recl[0]]+LepGood_charge[iF_Recl[1]]+LepGood_charge[iF_Recl[2]]", "I"),
-        
+        #("maxEtaBJet", "F"),
+        #("maxEta2BJet","F"),
+        ("dEtaFwdJet2BJet","F"),
+        #("dEtaBJet2BJet","F"),
+
         ## Add more here?
        
     ]

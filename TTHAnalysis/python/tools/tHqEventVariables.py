@@ -54,7 +54,7 @@ class tHqEventVariableFriend:
             MVAVar(name="minDRll"),
             MVAVar(name="LepGood_charge[iF_Recl[0]]+LepGood_charge[iF_Recl[1]]+LepGood_charge[iF_Recl[2]]"),
             
-            # MVAVar(name="maxEtaBJet"),
+            MVAVar(name="maxEtaBJet"),
             # MVAVar(name="maxEta2BJet"),
             # MVAVar(name="dEtaFwdJet2BJet"),
             # MVAVar(name="dEtaBJet2BJet")
