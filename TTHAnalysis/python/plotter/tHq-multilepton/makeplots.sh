@@ -3,7 +3,8 @@ USAGE="
 makeplots.sh outdir plottag
 
 Where plottag is one of:
- 3l, 3l-zcontrol, 3l-ttcontrol
+ 3l_sf, 3l_sf-zcontrol, 3l_sf-ttcontrol
+ 3l_df, 3l_df-zcontrol, 3l_df-ttcontrol
  2lss-mm, 2lss-mm-ttcontrol
  2lss-em, 2lss-em-ttcontrol
  2lss-ee, 2lss-ee-ttcontrol
@@ -54,12 +55,7 @@ MCA=""
 CUTS=""
 PLOTS=""
 case "$PLOTTAG" in
-    "3l" )
-        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L} --xp data"
-        MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata.txt"
-        CUTS="tHq-multilepton/cuts-thq-3l.txt"
-        PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"
-        ;;
+    
     "3l-mvaout" )
         OPTIONS="${OPTIONS} ${OPT3L} --xp data --plotmode norm"
         OPTIONS="${OPTIONS} --select-plot thqMVA_tt_3l,thqMVA_ttv_3l"
@@ -68,14 +64,38 @@ case "$PLOTTAG" in
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
         PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"
         ;;
-    "3l-zcontrol" )
-        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L}"
+    "3l_sfos" )
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L} --xp data -E 3lsfos"
+        MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata.txt"
+        CUTS="tHq-multilepton/cuts-thq-3l.txt"
+        PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"
+        ;;
+    "3l_sfos-zcontrol" )
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L} -E 3lsfos"
         MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata.txt"
         CUTS="tHq-multilepton/cuts-thq-3l-Zcontrol.txt"
         PLOTS="tHq-multilepton/plots-thq-3l-zcontrol.txt"
         ;;
     "3l-ttcontrol" )
-        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L}"
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L} -E 3lsfos"
+        MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata.txt"
+        CUTS="tHq-multilepton/cuts-thq-3l-ttbarcontrol.txt"
+        PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"
+        ;;
+    "3l_sfss" )
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L} --xp data -E 3lsfss"
+        MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata.txt"
+        CUTS="tHq-multilepton/cuts-thq-3l.txt"
+        PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"
+        ;;
+    "3l_sfss-zcontrol" )
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L} -E 3lsfss"
+        MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata.txt"
+        CUTS="tHq-multilepton/cuts-thq-3l-Zcontrol.txt"
+        PLOTS="tHq-multilepton/plots-thq-3l-zcontrol.txt"
+        ;;
+    "3l_sfss-ttcontrol" )
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L} -E 3lsfss"
         MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata.txt"
         CUTS="tHq-multilepton/cuts-thq-3l-ttbarcontrol.txt"
         PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"

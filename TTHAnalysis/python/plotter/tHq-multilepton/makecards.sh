@@ -3,8 +3,7 @@ USAGE="
 makecards.sh outdir channel
 
 Where channel is one of:
- 3l, 2lss_mm, 2lss_em, 2lss_ee
-
+ 3l_sfos, 3l_sfss, 2lss_mm, 2lss_em, 2lss_ee
 And the cards will be stored in outdir/channel
 "
 
@@ -54,8 +53,13 @@ BINNING="thqMVA_ttv_3l:thqMVA_tt_3l 40,-1,1,40,-1,1"
 SYSTFILE="tHq-multilepton/signal_extraction/systsEnv.txt"
 
 case "$CHANNEL" in
-    "3l" )
-        OPTIONS="${OPTIONS} ${OPT3L}"
+    "3l_sfos" )
+        OPTIONS="${OPTIONS} ${OPT3L} -E 3lsfos"
+        MCA="tHq-multilepton/signal_extraction/mca-thq-3l-mcdata-frdata_limits.txt"
+        CUTS="tHq-multilepton/cuts-thq-3l.txt"
+        ;;
+    "3l_sfss" )
+        OPTIONS="${OPTIONS} ${OPT3L} -E 3lsfss"
         MCA="tHq-multilepton/signal_extraction/mca-thq-3l-mcdata-frdata_limits.txt"
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
         ;;
@@ -66,6 +70,11 @@ case "$CHANNEL" in
         ;;
     "2lss_em" )
         OPTIONS="${OPTIONS} ${OPT2L} -E em_chan"
+        MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits.txt"
+        CUTS="tHq-multilepton/cuts-thq-2lss.txt"
+        ;;
+    "2lss_me" )
+        OPTIONS="${OPTIONS} ${OPT2L} -E me_chan"
         MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits.txt"
         CUTS="tHq-multilepton/cuts-thq-2lss.txt"
         ;;
