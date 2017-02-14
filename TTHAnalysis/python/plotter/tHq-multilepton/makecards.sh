@@ -49,7 +49,8 @@ OPTIONS="--od ${OUTNAME}/${CHANNEL} -o ${CHANNEL}"
 
 MCA=""
 CUTS=""
-BINNING="thqMVA_ttv_3l:thqMVA_tt_3l 40,-1,1,40,-1,1"
+#BINNING="thqMVA_ttv_3l:thqMVA_tt_3l 40,-1,1,40,-1,1"
+BINNING="thqMVA_ttv_2lss:thqMVA_tt_2lss 40,-1,1,40,-1,1"
 SYSTFILE="tHq-multilepton/signal_extraction/systsEnv.txt"
 
 case "$CHANNEL" in
