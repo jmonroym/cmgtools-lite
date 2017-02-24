@@ -29,11 +29,12 @@ echo "Normalizing to ${LUMI}/fb";
 
 BASEOPTIONS=" -f -j 8 -l ${LUMI} --s2v"\
 " -L ttH-multilepton/functionsTTH.cc"\
+" -L tHq-multilepton/functionsTHQ.cc"\
 " --tree treeProducerSusyMultilepton"\
 " --mcc ttH-multilepton/lepchoice-ttH-FO.txt"
 TREEINPUTS="-P thqtrees/TREES_TTH_250117_Summer16_JECV3_noClean_qgV2_tHqsoup/"
 FRIENDTREES=" -F sf/t thqtrees/tHq_production_Jan25/1_thq_recleaner_030217/evVarFriend_{cname}.root"\
-" -F sf/t thqtrees/tHq_production_Jan25/2_thq_friends_Feb3/evVarFriend_{cname}.root"\
+" -F sf/t thqtrees/tHq_production_Jan25/2_thq_friends_Feb14/evVarFriend_{cname}.root"\
 " -F sf/t thqtrees/tHq_production_Jan25/5_triggerDecision_250117_v1/evVarFriend_{cname}.root"\
 " -F sf/t thqtrees/tHq_production_Jan25/6_bTagSF_v2/evVarFriend_{cname}.root"
 DRAWOPTIONS="--lspam '#bf{CMS} #it{Preliminary}' --legendWidth 0.20 --legendFontSize 0.035"\
@@ -114,6 +115,12 @@ case "$PLOTTAG" in
         CUTS="tHq-multilepton/cuts-thq-2lss.txt"
         PLOTS="tHq-multilepton/plots-thq-2lss-kinMVA.txt"
         ;;
+    "2lss-ttcontrol" )
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT2L}"
+        MCA="tHq-multilepton/mca-thq-2lss-mcdata-frdata.txt"
+        CUTS="tHq-multilepton/cuts-thq-2lss-ttbarcontrol.txt"
+        PLOTS="tHq-multilepton/plots-thq-2lss-kinMVA.txt"
+        ;;
     "2lss-mm-ttcontrol" )
         OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT2L} -E mm_chan"
         MCA="tHq-multilepton/mca-thq-2lss-mcdata-frdata.txt"
@@ -122,6 +129,12 @@ case "$PLOTTAG" in
         ;;
     "2lss-em" )
         OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT2L} --xp data -E em_chan"
+        MCA="tHq-multilepton/mca-thq-2lss-mcdata-frdata.txt"
+        CUTS="tHq-multilepton/cuts-thq-2lss.txt"
+        PLOTS="tHq-multilepton/plots-thq-2lss-kinMVA.txt"
+        ;;
+    "2lss-me" )
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT2L} --xp data -E me_chan"
         MCA="tHq-multilepton/mca-thq-2lss-mcdata-frdata.txt"
         CUTS="tHq-multilepton/cuts-thq-2lss.txt"
         PLOTS="tHq-multilepton/plots-thq-2lss-kinMVA.txt"

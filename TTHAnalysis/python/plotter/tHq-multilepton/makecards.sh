@@ -21,7 +21,7 @@ echo "Normalizing to ${LUMI}/fb";
 
 TREEINPUTS="-P thqtrees/TREES_TTH_250117_Summer16_JECV3_noClean_qgV2_tHqsoup/"
 FRIENDTREES=" -F sf/t thqtrees/tHq_production_Jan25/1_thq_recleaner_030217/evVarFriend_{cname}.root"\
-" -F sf/t thqtrees/tHq_production_Jan25/2_thq_friends_Feb3/evVarFriend_{cname}.root"\
+" -F sf/t thqtrees/tHq_production_Jan25/2_thq_friends_Feb14/evVarFriend_{cname}.root"\
 " -F sf/t thqtrees/tHq_production_Jan25/5_triggerDecision_250117_v1/evVarFriend_{cname}.root"\
 " -F sf/t thqtrees/tHq_production_Jan25/6_bTagSF_v2/evVarFriend_{cname}.root"
 
@@ -31,8 +31,7 @@ BASEOPTIONS="-f -j 8 -l ${LUMI} --s2v -v 2"\
 " --tree treeProducerSusyMultilepton"\
 " --mcc ttH-multilepton/lepchoice-ttH-FO.txt"\
 " --xp data --asimov"\
-" --neg"\
-" --2d-binning-function 10:tHq_MVAto1D_3l_10"
+" --neg"
 
 # Pileup weight, btag SFs, trigger SFs, lepton Eff SFs:
 OPT2L="-W puw2016_nTrueInt_36fb(nTrueInt)*eventBTagSF*"\
@@ -49,9 +48,9 @@ OPTIONS="--od ${OUTNAME}/${CHANNEL} -o ${CHANNEL}"
 
 MCA=""
 CUTS=""
-#BINNING="thqMVA_ttv_3l:thqMVA_tt_3l 40,-1,1,40,-1,1"
-BINNING="thqMVA_ttv_2lss:thqMVA_tt_2lss 40,-1,1,40,-1,1"
+BINNING=""
 SYSTFILE="tHq-multilepton/signal_extraction/systsEnv.txt"
+FUNCTION=""
 
 case "$CHANNEL" in
     "3l_sfos" )
@@ -63,16 +62,22 @@ case "$CHANNEL" in
         OPTIONS="${OPTIONS} ${OPT3L} -E 3lsfss"
         MCA="tHq-multilepton/signal_extraction/mca-thq-3l-mcdata-frdata_limits.txt"
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
+        BINNING="thqMVA_ttv_3l:thqMVA_tt_3l 40,-1,1,40,-1,1"
+        FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_10"
         ;;
     "2lss_mm" )
-        OPTIONS="${OPTIONS} ${OPT2L} -E mm_chan"
+        OPTIONS="${OPTIONS} ${OPT2L} -E mm_chan --xp Gstar" # remove Gstar for mm channel
         MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits.txt"
         CUTS="tHq-multilepton/cuts-thq-2lss.txt"
+        BINNING="thqMVA_ttv_2lss:thqMVA_tt_2lss 40,-1,1,40,-1,1"
+        FUNCTION="--2d-binning-function 10:tHq_MVAto1D_2lss_10"
         ;;
     "2lss_em" )
-        OPTIONS="${OPTIONS} ${OPT2L} -E em_chan"
+        OPTIONS="${OPTIONS} ${OPT2L} -E em_chan --xp Gstar"
         MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits.txt"
         CUTS="tHq-multilepton/cuts-thq-2lss.txt"
+        BINNING="thqMVA_ttv_2lss:thqMVA_tt_2lss 40,-1,1,40,-1,1"
+        FUNCTION="--2d-binning-function 10:tHq_MVAto1D_2lss_10"
         ;;
     "2lss_me" )
         OPTIONS="${OPTIONS} ${OPT2L} -E me_chan"
@@ -80,9 +85,11 @@ case "$CHANNEL" in
         CUTS="tHq-multilepton/cuts-thq-2lss.txt"
         ;;
     "2lss_ee" )
-        OPTIONS="${OPTIONS} ${OPT2L} -E ee_chan"
+        OPTIONS="${OPTIONS} ${OPT2L} -E ee_chan --xp Gstar"
         MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits.txt"
         CUTS="tHq-multilepton/cuts-thq-2lss.txt"
+        BINNING="thqMVA_ttv_2lss:thqMVA_tt_2lss 40,-1,1,40,-1,1"
+        FUNCTION="--2d-binning-function 10:tHq_MVAto1D_2lss_10"
         ;;
     *)
         echo "${USAGE}"
@@ -94,12 +101,13 @@ test -d $OUTNAME/$CHANNEL || mkdir -p $OUTNAME/$CHANNEL
 echo "Storing output in ${OUTNAME}/${CHANNEL}/";
 
 ARGUMENTS="${MCA} ${CUTS} ${BINNING} ${SYSTFILE}"
-OPTIONS="${TREEINPUTS} ${FRIENDTREES} ${BASEOPTIONS} ${OPTIONS}"
+OPTIONS="${TREEINPUTS} ${FRIENDTREES} ${BASEOPTIONS} ${FUNCTION} ${OPTIONS}"
 
 echo "mca      : ${MCA}"
 echo "cuts     : ${CUTS}"
 echo "binning  : ${BINNING}"
 echo "systfile : ${SYSTFILE}"
+echo "function : ${FUNCTION}"
 
 if [[ "X$1" != "X" ]]; then
     INPUTFILE=$1; shift;

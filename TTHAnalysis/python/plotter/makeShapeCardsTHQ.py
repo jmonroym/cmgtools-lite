@@ -83,9 +83,6 @@ class ShapeCardMaker:
         self.mca = MCAnalysis(mcafile, self.options)
         self.cuts = CutsFile(cutsfile, self.options)
 
-        # allProcs=True: ignores SkipMe=True in mca
-        self.allprocesses = self.mca.listProcesses(allProcs=True)
-
         self.systs = {}
         self.systsEnv = {}
 
@@ -99,7 +96,7 @@ class ShapeCardMaker:
             if self.options.verbose > 0:
                 print "...reading from %s" % self.options.infile
             infile = ROOT.TFile(self.options.infile, "read")
-            for proc in self.allprocesses:
+            for proc in self.mca.listProcesses(allProcs=True): # ignore SkipMe=True in mca
                 histo = infile.Get(proc)
                 try:
                     histo.SetDirectory(0) # will raise ReferenceError if histo doesn't exist
@@ -123,23 +120,25 @@ class ShapeCardMaker:
             self.report['data_obs'].SetDirectory(0)
 
         if self.options.savefile != None:
-            savefile = ROOT.TFile(self.options.savefile, "recreate")
+            tfile = ROOT.TFile(self.options.savefile, "recreate")
             for n,h in self.report.iteritems():
-                savefile.WriteTObject(h,n)
-            savefile.Close()
+                tfile.WriteTObject(h,n)
+            tfile.Close()
+            print "...report written to %s" % self.options.savefile
 
         self.updateAllYields()
 
     def updateAllYields(self):
         self.allyields = {p:h.Integral() for p,h in self.report.iteritems()}
 
-    def prepareAsimov(self, signals=None):
+    def prepareAsimov(self, signals=None, backgrounds=None):
         if not self.options.asimov:
             print "WARNING: overwriting data_obs with asimov dataset without --asimov option"
 
         signals = signals or self.mca.listSignals()
+        backgrounds = backgrounds or self.mca.listBackgrounds()
         tomerge = []
-        for p in signals + self.mca.listBackgrounds():
+        for p in signals + backgrounds:
             if p in self.report:
                 tomerge.append(self.report[p])
         self.report['data_obs'] = mergePlots("x_data_obs", tomerge)
@@ -149,16 +148,17 @@ class ShapeCardMaker:
         if self.options.verbose > 1:
             print "...merging %s for asimov dataset ('data_obs')" % repr([x.GetName() for x in tomerge])
 
-    def setProcesses(self, signals=None):
+    def setProcesses(self, signals=None, backgrounds=None):
         signals = signals or self.mca.listSignals()
+        backgrounds = backgrounds or self.mca.listBackgrounds()
         self.processes = []
         self.iproc = {}
         for i,s in enumerate(signals):
             if self.allyields[s] == 0: continue
             self.processes.append(s)
-            self.iproc[s] = i-len(self.mca.listSignals())+1
+            self.iproc[s] = i-len(signals)+1
 
-        for i,b in enumerate(self.mca.listBackgrounds()):
+        for i,b in enumerate(backgrounds):
             if self.allyields[b] == 0: continue
             self.processes.append(b)
             self.iproc[b] = i+1
@@ -226,7 +226,7 @@ class ShapeCardMaker:
         if self.options.verbose: print ("...parsing normalization systs")
         for name, systentries in self.systs.iteritems():
             effmap = {}
-            for proc in self.allprocesses:
+            for proc in self.mca.listProcesses(allProcs=False):
                 effect = "-"
                 for (procmap, amount) in systentries:
                     if re.match(procmap, proc):
@@ -256,7 +256,7 @@ class ShapeCardMaker:
             if not (any([re.match(x+'.*', modes[0]) for x in ["envelop","shapeOnly"]])): continue
             effmap0  = {}
             effmap12 = {}
-            for proc in self.allprocesses:
+            for proc in self.mca.listProcesses(allProcs=False):
                 effect = "-"
                 effect0  = "-"
                 effect12 = "-"
@@ -338,10 +338,13 @@ class ShapeCardMaker:
                                 p2up.SetBinContent(bx,by, nominal.GetBinContent(bx,by))
                                 p2dn.SetBinContent(bx,by, nominal.GetBinContent(bx,by))
 
-                    p1up.Scale(nominal.Integral()/p1up.Integral())
-                    p1dn.Scale(nominal.Integral()/p1dn.Integral())
-                    p2up.Scale(nominal.Integral()/p2up.Integral())
-                    p2dn.Scale(nominal.Integral()/p2dn.Integral())
+                    try:
+                        p1up.Scale(nominal.Integral()/p1up.Integral())
+                        p1dn.Scale(nominal.Integral()/p1dn.Integral())
+                        p2up.Scale(nominal.Integral()/p2up.Integral())
+                        p2dn.Scale(nominal.Integral()/p2dn.Integral())
+                    except ZeroDivisionError:
+                        print "ERROR: Zero integral for %s %s %s" % (name, proc, repr([x.GetName() for x in [p1up, p1dn, p2up, p2dn]]))
 
                     if "shapeOnly" not in mode:
                         self.report[proc+"_"+name+"0Up"]   = p0up
@@ -391,7 +394,7 @@ class ShapeCardMaker:
 
             effmap0  = {}
             effmap12 = {}
-            for proc in self.allprocesses:
+            for proc in self.mca.listProcesses(allProcs=False):
                 effect = "-"
                 effect0  = "-"
                 effect12 = "-"
@@ -443,8 +446,8 @@ class ShapeCardMaker:
                                     self.report[str(p0Up.GetName())[2:]] = p0Up
                                     self.report[str(p0Dn.GetName())[2:]] = p0Dn
 
-                                    effmap0  = {_p:"1" if _p==proc else "-" for _p in self.allprocesses}
-                                    effmap12 = {_p:"1" if _p==proc else "-" for _p in self.allprocesses}
+                                    effmap0  = {_p:"1" if _p==proc else "-" for _p in self.mca.listProcesses(allProcs=False)}
+                                    effmap12 = {_p:"1" if _p==proc else "-" for _p in self.mca.listProcesses(allProcs=False)}
                                     systsEnv2["%s_%s_%s_bin%d"%(name,self.truebinname,proc,binx)] = (effmap0, effmap12, "templates")
                                     break # otherwise you apply more than once to the same bin if more regexps match
 
@@ -474,8 +477,8 @@ class ShapeCardMaker:
                                     self.report[str(p0Up.GetName())[2:]] = p0Up
                                     self.report[str(p0Dn.GetName())[2:]] = p0Dn
 
-                                    effmap0  = {_p:"1" if _p==proc else "-" for _p in self.allprocesses}
-                                    effmap12 = {_p:"1" if _p==proc else "-" for _p in self.allprocesses}
+                                    effmap0  = {_p:"1" if _p==proc else "-" for _p in self.mca.listProcesses(allProcs=False)}
+                                    effmap12 = {_p:"1" if _p==proc else "-" for _p in self.mca.listProcesses(allProcs=False)}
                                     systsEnv2["%s_%s_%s_bin%d_%d"%(name,self.truebinname,proc,binx,biny)] = (effmap0, effmap12, "templates")
                                     break # otherwise you apply more than once to the same bin if more regexps match
 
@@ -515,7 +518,7 @@ class ShapeCardMaker:
                         self.mca._projection.scaleSystTemplate(name,nominal,p0Dn)
                 elif mode in ["alternateShape", "alternateShapeOnly"]:
                     nominal = self.report[proc]
-                    alternate = self.report[effect]
+                    alternate = self.report["%s_%s"%(proc,effect)]
                     if self.mca._projection != None:
                         self.mca._projection.scaleSystTemplate(name,nominal,alternate)
                     alternate.SetName("%s_%sUp" % (nominal.GetName(),name))
@@ -581,7 +584,7 @@ class ShapeCardMaker:
                 datacard.write((hpatt%name+'  lnN') + " ".join([kpatt % effmap[p] for p in self.processes]) +"\n")
 
             for name, (effmap0,effmap12,mode) in self.systsEnv.iteritems():
-                if mode == "templates":
+                if mode in ["templates", "alternateShape", "alternateShapeOnly"]:
                     datacard.write(hpatt%name+'shape')
                     datacard.write(" ".join([kpatt % effmap0[p] for p in self.processes]))
                     datacard.write("\n")
@@ -663,14 +666,27 @@ if __name__ == '__main__':
 
     # Split the signal processes into different points (using the first '_')
     # and process all of them separately.
-    allsignals = cardMaker.mca.listSignals(allProcs=True)
-    points = sorted(list(set([p.split('_',1)[1] for p in allsignals])))
-
+    allsignals = cardMaker.mca.listSignals(allProcs=False) # exclude the systematics variations
+    points = sorted(list(set([p.split('_',2)[2] for p in allsignals])))
+    print "...processing the following signal points: %s" % repr(points)
     for point in points:
-        signals = ['THQ_%s'%point, 'THW_%s'%point]
+        # Check if we have all the samples for this point
+        absct = point.split('_')[1].strip('m') # '1p5_m0p25' -> '0p25'
+        for testing in ['tHq_hww_%s'%point, 'tHW_hww_%s'%point, 'ttH_%s'%absct]:
+            if testing == 'ttH_0': continue # Don't need that one
+            if not testing in cardMaker.mca.listProcesses(allProcs=True):
+                print "Process %s not found, aborting" % testing
+                sys.exit(-1)
+
+        # Take the correct signals for this point
+        signals = ['tHq_hww_%s'%point, 'tHW_hww_%s'%point]
+        # Take all non-Higgs backgrounds and add the correct ttH for this point
+        backgrounds = [p for p in cardMaker.mca.listBackgrounds() if not p.startswith('ttH')]
+        if absct != '0': backgrounds.insert(0, 'ttH_%s'%absct)
+
         if options.asimov:
-            cardMaker.prepareAsimov(signals=signals)
-        cardMaker.setProcesses(signals=signals)
+            cardMaker.prepareAsimov(signals=signals, backgrounds=backgrounds)
+        cardMaker.setProcesses(signals=signals, backgrounds=backgrounds)
         ofilename = "%s_%s.card.txt" % (cardMaker.binname, point)
         cardMaker.writeDataCard(ofilename=ofilename)
 

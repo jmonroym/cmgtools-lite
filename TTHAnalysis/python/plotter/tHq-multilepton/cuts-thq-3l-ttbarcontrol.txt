@@ -6,24 +6,18 @@ trigger       : Trigger_3l
 
 # three good leptons
 trilep        : nLepFO>=3 && nLepTight < 4
-3ssclveto     : abs(LepGood1_charge+LepGood2_charge+LepGood3_charge)<2    # triple same sign charges veto
 cleanup       : minMllAFAS > 12
 pt2010        : LepGood1_conePt>20 && LepGood2_conePt>10 && LepGood3_conePt>10
 TTT           : LepGood1_isLepTight && LepGood2_isLepTight && LepGood3_isLepTight
 Zveto         : abs(mZ1-91.2) > 15
 q1            : abs(LepGood1_charge + LepGood2_charge + LepGood3_charge) == 1
-ele conv cuts : (abs(LepGood1_pdgId)!=11 || (LepGood1_convVeto && LepGood1_lostHits==0)) && (abs(LepGood2_pdgId)!=11 || (LepGood2_convVeto && LepGood2_lostHits==0)) && (abs(LepGood3_pdgId)!=11 || (LepGood3_convVeto && LepGood3_lostHits==0))
 
-3lsfos        : (LepGood1_pdgId==-LepGood3_pdgId || LepGood2_pdgId==-LepGood3_pdgId || LepGood1_pdgId==-LepGood2_pdgId) ; Disable=True
-3lsfss        :!(LepGood1_pdgId==-LepGood3_pdgId || LepGood2_pdgId==-LepGood3_pdgId || LepGood1_pdgId==-LepGood2_pdgId) ; Disable=True
+ele conv cuts : (abs(LepGood1_pdgId)!=11 || (LepGood1_convVeto && LepGood1_lostHits==0)) && (abs(LepGood2_pdgId)!=11 || (LepGood2_convVeto && LepGood2_lostHits==0)) && (abs(LepGood3_pdgId)!=11 || (LepGood3_convVeto && LepGood3_lostHits==0))
 
 # tHq with H -> WW has only one hard b-jet while
 # most backgrounds (ttbar, ttW, ttZ, ttH) have two.
 # In addition we expect one forward jet
 2j            : nJet25>=2
-fwdjet        : maxEtaJet25 >= 0
+fwdjet        : maxEtaJet25 >= 0 && maxEtaJet25 < 2
 1bm           : nBJetMedium25 >= 1
 2bl           : nBJetLoose25 >= 2; Disable=True
-
-# Harder cut on forward jet
-fwdjetpt50    : (maxEtaJet25 < 2.4 || fwdJetPt25 > 50); Disable=True

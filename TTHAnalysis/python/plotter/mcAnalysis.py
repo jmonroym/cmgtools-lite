@@ -65,7 +65,8 @@ class MCAnalysis:
                         extra[key] = eval(val)
                     else: extra[setting] = True
             for k,v in addExtras.iteritems():
-                if k in extra: raise RuntimeError, 'You are trying to overwrite an extra option already set'
+                if k in extra and extra[k] != v:
+                    raise RuntimeError('You are trying to overwrite an extra option: %s'%k)
                 extra[k] = v
             field = [f.strip() for f in line.split(':')]
             if len(field) == 1 and field[0] == "*":
@@ -190,14 +191,13 @@ class MCAnalysis:
                         for p in p0.split(","):
                             if re.match(p+"$", pname): scale += "*("+s+")"
                     to_norm = True
+                elif len(field) == 2:
+                    pass
                 elif len(field) == 3:
                     tty.setScaleFactor(field[2])
                 else:
-                    try:
-                        pckobj  = pickle.load(open(pckfile,'r'))
-                        counters = dict(pckobj)
-                    except:
-                        pass
+                    print "Poorly formatted line: ", field
+                    raise RuntimeError                    
                 # Adjust free-float and fixed from command line
                 for p0 in options.processesToFloat:
                     for p in p0.split(","):
