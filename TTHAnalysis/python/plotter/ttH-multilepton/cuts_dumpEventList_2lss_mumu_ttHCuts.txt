@@ -1,0 +1,57 @@
+alwaystrue: 1
+trigger: Trigger_2l
+cleanup: minMllAFAS_Recl > 12
+dilep: nLepFO_Recl>=2
+pt2515: LepGood_conePt[iLepFO_Recl[0]]>25 && LepGood_conePt[iLepFO_Recl[1]]>15
+#htllv100 : LepGood1_conept+LepGood2_conept+met_pt > 100
+TT: LepGood_isLepTight_Recl[iLepFO_Recl[0]] && LepGood_isLepTight_Recl[iLepFO_Recl[1]]
+exclusive: nLepTight_Recl<=2
+same-sign: LepGood_charge[iLepFO_Recl[0]]*LepGood_charge[iLepFO_Recl[1]] > 0
+Zee_veto: abs(LepGood_pdgId[iLepFO_Recl[0]])!=11 || abs(LepGood_pdgId[iLepFO_Recl[1]]) != 11 || abs(mass_2(LepGood_pt[iLepFO_Recl[0]],LepGood_eta[iLepFO_Recl[0]],LepGood_phi[iLepFO_Recl[0]],LepGood_mass[iLepFO_Recl[0]],LepGood_pt[iLepFO_Recl[1]],LepGood_eta[iLepFO_Recl[1]],LepGood_phi[iLepFO_Recl[1]],LepGood_mass[iLepFO_Recl[1]])-91.2) > 10
+metLDee: abs(LepGood_pdgId[iLepFO_Recl[0]])!=11 || abs(LepGood_pdgId[iLepFO_Recl[1]]) != 11 || met_pt*0.00397 + mhtJet25_Recl*0.00265 > 0.2
+
+eleID: (abs(LepGood_pdgId[iLepFO_Recl[0]])!=11 || (LepGood_convVeto[iLepFO_Recl[0]] && LepGood_lostHits[iLepFO_Recl[0]]==0 && LepGood_tightCharge[iLepFO_Recl[0]]>=2)) && (abs(LepGood_pdgId[iLepFO_Recl[1]])!=11 || (LepGood_convVeto[iLepFO_Recl[1]] && LepGood_lostHits[iLepFO_Recl[1]]==0 && LepGood_tightCharge[iLepFO_Recl[1]]>=2))
+muTightCharge: (abs(LepGood_pdgId[iLepFO_Recl[0]])!=13 || LepGood_tightCharge[iLepFO_Recl[0]]>=1) && (abs(LepGood_pdgId[iLepFO_Recl[1]])!=13 || LepGood_tightCharge[iLepFO_Recl[1]]>=1)
+
+4j: nJet25_Recl>=4
+2b1B: nBJetLoose25_Recl >= 2 || nBJetMedium25_Recl >= 1
+
+#tauveto: nTauSel_Recl_isTauTight==0  # check is this cut need to be commented!!!!!!!!!!!!!! 
+
+# some cuts that are off by default but can be turned on with -E
+tightMVA070: LepGood_mvaTTH[iLepFO_Recl[0]]>0.70 && LepGood_mvaTTH[iLepFO_Recl[1]]>0.70 ; Disable=True
+tightMVA075: LepGood_mvaTTH[iLepFO_Recl[0]]>0.75 && LepGood_mvaTTH[iLepFO_Recl[1]]>0.75 ; Disable=True
+tightMVA080: LepGood_mvaTTH[iLepFO_Recl[0]]>0.80 && LepGood_mvaTTH[iLepFO_Recl[1]]>0.80 ; Disable=True
+tightMVA085: LepGood_mvaTTH[iLepFO_Recl[0]]>0.85 && LepGood_mvaTTH[iLepFO_Recl[1]]>0.85 ; Disable=True
+tightMVA090: LepGood_mvaTTH[iLepFO_Recl[0]]>0.90 && LepGood_mvaTTH[iLepFO_Recl[1]]>0.90 ; Disable=True
+tightMVA095: LepGood_mvaTTH[iLepFO_Recl[0]]>0.95 && LepGood_mvaTTH[iLepFO_Recl[1]]>0.95 ; Disable=True
+1B: nBJetMedium25_Recl >= 1 ; Disable=True
+2B: nBJetMedium25_Recl >= 2 ; Disable=True
+BLoose: nBJetMedium25_Recl < 2 ; Disable=True
+BTight: nBJetMedium25_Recl >= 2 ; Disable=True
+2j: nJet25_Recl>=2 ; Disable=True
+x3j: nJet25_Recl==3 ; Disable=True
+
+ee: abs(LepGood_pdgId[iLepFO_Recl[0]])==11 && abs(LepGood_pdgId[iLepFO_Recl[1]])==11; Disable=True
+em: abs(LepGood_pdgId[iLepFO_Recl[0]]) != abs(LepGood_pdgId[iLepFO_Recl[1]]);         Disable=True
+mm: abs(LepGood_pdgId[iLepFO_Recl[0]])==13 && abs(LepGood_pdgId[iLepFO_Recl[1]])==13#; Disable=True
+mll200: mass_2(LepGood_conePt[iLepFO_Recl[0]],LepGood_eta[iLepFO_Recl[0]],LepGood_phi[iLepFO_Recl[0]],LepGood_mass[iLepFO_Recl[0]],LepGood_conePt[iLepFO_Recl[1]],LepGood_eta[iLepFO_Recl[1]],LepGood_phi[iLepFO_Recl[1]],LepGood_mass[iLepFO_Recl[1]])>200; Disable=True
+b2lss_ee: abs(LepGood_pdgId[iLepFO_Recl[0]])==11 && abs(LepGood_pdgId[iLepFO_Recl[1]])==11 ; Disable=True
+b2lss_ee_neg: abs(LepGood_pdgId[iLepFO_Recl[0]])==11 && abs(LepGood_pdgId[iLepFO_Recl[1]])==11 && LepGood_charge[iLepFO_Recl[0]]<0 ; Disable=True
+b2lss_ee_pos: abs(LepGood_pdgId[iLepFO_Recl[0]])==11 && abs(LepGood_pdgId[iLepFO_Recl[1]])==11 && LepGood_charge[iLepFO_Recl[0]]>0 ; Disable=True
+b2lss_em: (abs(LepGood_pdgId[iLepFO_Recl[0]]) != abs(LepGood_pdgId[iLepFO_Recl[1]])) ; Disable=True
+b2lss_em_bl_neg: (abs(LepGood_pdgId[iLepFO_Recl[0]]) != abs(LepGood_pdgId[iLepFO_Recl[1]])) && LepGood_charge[iLepFO_Recl[0]]<0 && nBJetMedium25_Recl < 2 ; Disable=True
+b2lss_em_bl_pos: (abs(LepGood_pdgId[iLepFO_Recl[0]]) != abs(LepGood_pdgId[iLepFO_Recl[1]])) && LepGood_charge[iLepFO_Recl[0]]>0 && nBJetMedium25_Recl < 2 ; Disable=True
+b2lss_em_bt_neg: (abs(LepGood_pdgId[iLepFO_Recl[0]]) != abs(LepGood_pdgId[iLepFO_Recl[1]])) && LepGood_charge[iLepFO_Recl[0]]<0 && nBJetMedium25_Recl >= 2 ; Disable=True
+b2lss_em_bt_pos: (abs(LepGood_pdgId[iLepFO_Recl[0]]) != abs(LepGood_pdgId[iLepFO_Recl[1]])) && LepGood_charge[iLepFO_Recl[0]]>0 && nBJetMedium25_Recl >= 2 ; Disable=True
+b2lss_mm: abs(LepGood_pdgId[iLepFO_Recl[0]])==13 && abs(LepGood_pdgId[iLepFO_Recl[1]])==13 ; Disable=True
+b2lss_mm_bl_neg: abs(LepGood_pdgId[iLepFO_Recl[0]])==13 && abs(LepGood_pdgId[iLepFO_Recl[1]])==13 && LepGood_charge[iLepFO_Recl[0]]<0 && nBJetMedium25_Recl < 2 ; Disable=True
+b2lss_mm_bl_pos: abs(LepGood_pdgId[iLepFO_Recl[0]])==13 && abs(LepGood_pdgId[iLepFO_Recl[1]])==13 && LepGood_charge[iLepFO_Recl[0]]>0 && nBJetMedium25_Recl < 2 ; Disable=True
+b2lss_mm_bt_neg: abs(LepGood_pdgId[iLepFO_Recl[0]])==13 && abs(LepGood_pdgId[iLepFO_Recl[1]])==13 && LepGood_charge[iLepFO_Recl[0]]<0 && nBJetMedium25_Recl >= 2 ; Disable=True
+b2lss_mm_bt_pos: abs(LepGood_pdgId[iLepFO_Recl[0]])==13 && abs(LepGood_pdgId[iLepFO_Recl[1]])==13 && LepGood_charge[iLepFO_Recl[0]]>0 && nBJetMedium25_Recl >= 2 ; Disable=True
+b2lss_bl: nBJetMedium25_Recl < 2 ; Disable=True
+b2lss_bt: nBJetMedium25_Recl >= 2 ; Disable=True
+2lep_promptrightcharge: (!isData) && LepGood_isMatchRightCharge[iLepFO_Recl[0]] && LepGood_isMatchRightCharge[iLepFO_Recl[1]]; Disable=True
+fakeIsMu : if3((nLepFO_Recl>1)*(LepGood_isLepTight[iLepFO_Recl[0]]+LepGood_isLepTight[iLepFO_Recl[1]]==1),if3(LepGood_isLepTight[iLepFO_Recl[0]],(abs(LepGood_pdgId[iLepFO_Recl[1]])==13),(abs(LepGood_pdgId[iLepFO_Recl[0]])==13)),0); Disable=True
+fakeIsEl : if3((nLepFO_Recl>1)*(LepGood_isLepTight[iLepFO_Recl[0]]+LepGood_isLepTight[iLepFO_Recl[0]]==1),if3(LepGood_isLepTight[iLepFO_Recl[0]],(abs(LepGood_pdgId[iLepFO_Recl[1]])==11),(abs(LepGood_pdgId[iLepFO_Recl[0]])==11)),0); Disable=True
+muChargeConsistencyThree: (abs(LepGood_pdgId[iLepFO_Recl[0]])!=13 || LepGood_chargeConsistency[iLepFO_Recl[0]]>=3) && (abs(LepGood_pdgId[iLepFO_Recl[1]])!=13 || LepGood_chargeConsistency[iLepFO_Recl[1]]>=3); Disable=True

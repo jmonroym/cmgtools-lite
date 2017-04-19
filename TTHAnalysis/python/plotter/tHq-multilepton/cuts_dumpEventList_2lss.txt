@@ -1,0 +1,34 @@
+# Format (use '#' to comment lines):
+# name of cut : formula using branch names as in tree
+alwaystrue    : 1
+
+trigger       : Trigger_2l
+
+# two good same-sign leptons
+dilep         : nLepFO_Recl>=2 && nLepTight_Recl < 3
+cleanup       : minMllAFAS_Recl > 12
+pt2515        : LepGood_conePt[iLepFO_Recl[0]]>25 && LepGood_conePt[iLepFO_Recl[1]]>15
+TT            : LepGood_isLepTight_Recl[iLepFO_Recl[0]] && LepGood_isLepTight_Recl[iLepFO_Recl[1]]
+samesign      : LepGood_charge[iLepFO_Recl[0]]*LepGood_charge[iLepFO_Recl[1]] > 0
+
+mm_chan       : abs(LepGood_pdgId[iLepFO_Recl[0]]*LepGood_pdgId[iLepFO_Recl[1]]) == 169 ; Disable=True
+em_chan       : abs(LepGood_pdgId[iLepFO_Recl[0]]*LepGood_pdgId[iLepFO_Recl[1]]) == 143 ; Disable=True
+# em_chan       : abs(LepGood_pdgId[iLepFO_Recl[0]])==11 && abs(LepGood_pdgId[iLepFO_Recl[1]]) == 13 ; Disable=True
+# me_chan       : abs(LepGood_pdgId[iLepFO_Recl[0]])==13 && abs(LepGood_pdgId[iLepFO_Recl[1]]) == 11 ; Disable=True
+ee_chan       : abs(LepGood_pdgId[iLepFO_Recl[0]]*LepGood_pdgId[iLepFO_Recl[1]]) == 121 ; Disable=True
+
+Zveto_ee      : abs(LepGood_pdgId[iLepFO_Recl[0]])!=11 || abs(LepGood_pdgId[iLepFO_Recl[1]]) != 11 || abs(mass_2(LepGood_pt[iLepFO_Recl[0]],LepGood_eta[iLepFO_Recl[0]],LepGood_phi[iLepFO_Recl[0]],LepGood_mass[iLepFO_Recl[0]],LepGood_pt[iLepFO_Recl[1]],LepGood_eta[iLepFO_Recl[1]],LepGood_phi[iLepFO_Recl[1]],LepGood_mass[iLepFO_Recl[1]])-91.2) > 10
+muTightCharge : (abs(LepGood_pdgId[iLepFO_Recl[0]])!=13 || LepGood_tightCharge[iLepFO_Recl[0]]>=1) && (abs(LepGood_pdgId[iLepFO_Recl[1]])!=13 || LepGood_tightCharge[iLepFO_Recl[1]]>=1)
+eleID         : (abs(LepGood_pdgId[iLepFO_Recl[0]])!=11 || (LepGood_convVeto[iLepFO_Recl[0]] && LepGood_lostHits[iLepFO_Recl[0]]==0 && LepGood_tightCharge[iLepFO_Recl[0]]>=2)) && (abs(LepGood_pdgId[iLepFO_Recl[1]])!=11 || (LepGood_convVeto[iLepFO_Recl[1]] && LepGood_lostHits[iLepFO_Recl[1]]==0 && LepGood_tightCharge[iLepFO_Recl[1]]>=2))
+
+
+# tHq with H -> WW has only one hard b-jet while
+# most backgrounds (ttbar, ttW, ttZ, ttH) have two.
+# In addition we expect one forward jet
+# 2j            : nJet25>=2
+fwdjet        : maxEtaJet25_40 >= 0 
+1bm           : nBJetMedium25_Recl >= 1
+2bl           : nBJetLoose25_Recl >= 2; Disable=True
+
+mufake        : (abs(LepGood_pdgId[iLepFO_Recl[0]])==13 && LepGood_mcMatchId[iLepFO_Recl[0]]==0) || (abs(LepGood_pdgId[iLepFO_Recl[1]])==13 && LepGood_mcMatchId[iLepFO_Recl[1]]==0); Disable=True
+elfake        : (abs(LepGood_pdgId[iLepFO_Recl[0]])==11 && LepGood_mcMatchId[iLepFO_Recl[0]]==0) || (abs(LepGood_pdgId[iLepFO_Recl[1]])==11 && LepGood_mcMatchId[iLepFO_Recl[1]]==0); Disable=True

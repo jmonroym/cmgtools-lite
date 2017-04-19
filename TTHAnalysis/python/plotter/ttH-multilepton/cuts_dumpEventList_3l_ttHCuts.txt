@@ -1,0 +1,34 @@
+alwaystrue: 1
+trilep: nLepFO_Recl>=3
+exclusive: nLepTight_Recl <= 3
+cleanup: minMllAFAS_Recl > 12
+trigger: Trigger_3l
+pt251515: LepGood_conePt[iLepFO_Recl[0]]>25 && LepGood_conePt[iLepFO_Recl[1]]>15 && LepGood_conePt[iLepFO_Recl[2]]>15
+TTT: LepGood_isLepTight_Recl[iLepFO_Recl[0]] && LepGood_isLepTight_Recl[iLepFO_Recl[1]] && LepGood_isLepTight_Recl[iLepFO_Recl[2]]
+Zveto: abs(mZ1_Recl-91.2) > 10
+met LD: nJet25_Recl >= 4 || met_pt*0.00397 + mhtJet25_Recl*0.00265 > 0.2 + 0.1*(mZ1_Recl > 0)
+q1: abs(LepGood_charge[iLepFO_Recl[0]] + LepGood_charge[iLepFO_Recl[1]] + LepGood_charge[iLepFO_Recl[2]]) == 1
+
+ele conv cuts: (abs(LepGood_pdgId[iLepFO_Recl[0]])!=11 || (LepGood_convVeto[iLepFO_Recl[0]] && LepGood_lostHits[iLepFO_Recl[0]]==0)) && (abs(LepGood_pdgId[iLepFO_Recl[1]])!=11 || (LepGood_convVeto[iLepFO_Recl[1]] && LepGood_lostHits[iLepFO_Recl[1]]==0)) && (abs(LepGood_pdgId[iLepFO_Recl[2]])!=11 || (LepGood_convVeto[iLepFO_Recl[2]] && LepGood_lostHits[iLepFO_Recl[2]]==0))
+
+2j: nJet25_Recl>=2
+2b1B: nBJetLoose25_Recl >= 2 || nBJetMedium25_Recl >= 1
+
+#vetottHZZ: !(mZ2_Recl>0 && m4l<140) #check this cut for thq-tth overlapping
+
+#tauveto: nTauSel_Recl_isTauTight==0  #check this cut for thq-tth overlapping
+
+x2j: nJet25_Recl==2 ; Disable=True
+4j: nJet25_Recl>=4 ; Disable=True
+gt2b: nBJetLoose25_Recl >= 2 ; Disable=True
+1B: nBJetMedium25_Recl >= 1 ; Disable=True
+2B: nBJetMedium25_Recl >= 2 ; Disable=True
+BLoose: nBJetMedium25_Recl < 2 ; Disable=True
+BTight: nBJetMedium25_Recl >= 2 ; Disable=True
+Bveto: nBJetMedium25_Recl == 0 ; Disable=True
+tightMVA075: LepGood_mvaTTH[iLepFO_Recl[0]]>0.75 && LepGood_mvaTTH[iLepFO_Recl[1]]>0.75 && LepGood_mvaTTH[iLepFO_Recl[2]]>0.75 ; Disable=True
+b3l_bl_neg: (LepGood_charge[iLepFO_Recl[0]]+LepGood_charge[iLepFO_Recl[1]]+LepGood_charge[iLepFO_Recl[2]])<0 && nBJetMedium25_Recl < 2 ; Disable=True
+b3l_bl_pos: (LepGood_charge[iLepFO_Recl[0]]+LepGood_charge[iLepFO_Recl[1]]+LepGood_charge[iLepFO_Recl[2]])>0 && nBJetMedium25_Recl < 2 ; Disable=True
+b3l_bt_neg: (LepGood_charge[iLepFO_Recl[0]]+LepGood_charge[iLepFO_Recl[1]]+LepGood_charge[iLepFO_Recl[2]])<0 && nBJetMedium25_Recl >= 2 ; Disable=True
+b3l_bt_pos: (LepGood_charge[iLepFO_Recl[0]]+LepGood_charge[iLepFO_Recl[1]]+LepGood_charge[iLepFO_Recl[2]])>0 && nBJetMedium25_Recl >= 2 ; Disable=True
+3lep_prompt: (!isData) && LepGood_mcMatchId[iLepFO_Recl[0]]!=0 && LepGood_mcMatchId[iLepFO_Recl[1]]!=0 && LepGood_mcMatchId[iLepFO_Recl[2]]!=0; Disable=True

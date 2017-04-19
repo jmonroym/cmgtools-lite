@@ -1,0 +1,30 @@
+# Format (use '#' to comment lines):
+# name of cut : formula using branch names as in tree
+alwaystrue    : 1
+
+trigger       : Trigger_3l
+
+# three good leptons
+trilep        : nLepFO_Recl>=3 && nLepTight_Recl < 4
+cleanup       : minMllAFAS_Recl > 12
+pt251515      : LepGood_conePt[iLepFO_Recl[0]]>25 && LepGood_conePt[iLepFO_Recl[1]]>15 && LepGood_conePt[iLepFO_Recl[2]]>15
+TTT           : LepGood_isLepTight_Recl[iLepFO_Recl[0]] && LepGood_isLepTight_Recl[iLepFO_Recl[1]] && LepGood_isLepTight_Recl[iLepFO_Recl[2]]
+Zveto         : abs(mZ1_Recl-91.2) > 15
+q1            : abs(LepGood_charge[iLepFO_Recl[0]] + LepGood_charge[iLepFO_Recl[1]] + LepGood_charge[iLepFO_Recl[2]]) == 1
+ele conv cuts : (abs(LepGood_pdgId[iLepFO_Recl[0]])!=11 || (LepGood_convVeto[iLepFO_Recl[0]] && LepGood_lostHits[iLepFO_Recl[0]]==0)) && (abs(LepGood_pdgId[iLepFO_Recl[1]])!=11 || (LepGood_convVeto[iLepFO_Recl[1]] && LepGood_lostHits[iLepFO_Recl[1]]==0)) && (abs(LepGood_pdgId[iLepFO_Recl[2]])!=11 || (LepGood_convVeto[iLepFO_Recl[2]] && LepGood_lostHits[iLepFO_Recl[2]]==0))
+
+3lsfos        :  (LepGood_pdgId[iLepFO_Recl[0]]==-LepGood_pdgId[iLepFO_Recl[2]] || LepGood_pdgId[iLepFO_Recl[1]]==-LepGood_pdgId[iLepFO_Recl[2]] || LepGood_pdgId[iLepFO_Recl[0]]==-LepGood_pdgId[iLepFO_Recl[1]]) ; Disable=True
+3lsfss        :! (LepGood_pdgId[iLepFO_Recl[0]]==-LepGood_pdgId[iLepFO_Recl[2]] || LepGood_pdgId[iLepFO_Recl[1]]==-LepGood_pdgId[iLepFO_Recl[2]] || LepGood_pdgId[iLepFO_Recl[0]]==-LepGood_pdgId[iLepFO_Recl[1]]) ; Disable=True
+
+
+# tHq with H -> WW has only one hard b-jet while
+# most backgrounds (ttbar, ttW, ttZ, ttH) have two.
+# In addition we expect one forward jet
+#2j            : nJet25>=2
+fwdjet        : maxEtaJet25_40 >= 0
+1bm           : nBJetMedium25_Recl >= 1
+2bl           : nBJetLoose25_Recl >= 2; Disable=True
+
+mufake        : (abs(LepGood_pdgId[iLepFO_Recl[0]])==13 && LepGood_mcMatchId[iLepFO_Recl[0]]==0) || (abs(LepGood_pdgId[iLepFO_Recl[1]])==13 && LepGood_mcMatchId[iLepFO_Recl[1]]==0) || (abs(LepGood_pdgId[iLepFO_Recl[2]])==13 && LepGood_mcMatchId[iLepFO_Recl[2]]==0); Disable=True
+elfake        : (abs(LepGood_pdgId[iLepFO_Recl[0]])==11 && LepGood_mcMatchId[iLepFO_Recl[0]]==0) || (abs(LepGood_pdgId[iLepFO_Recl[1]])==11 && LepGood_mcMatchId[iLepFO_Recl[1]]==0) || (abs(LepGood_pdgId[iLepFO_Recl[2]])==11 && LepGood_mcMatchId[iLepFO_Recl[2]]==0); Disable=True
+
