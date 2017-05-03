@@ -69,7 +69,7 @@ case "$CHANNEL" in
         ;;
 
     "3l_cp" )
-        OPTIONS="${OPTIONS} ${OPT3L} --xp Gstar"
+        OPTIONS="${OPTIONS} ${OPT3L} --xp Gstar --cp cp"
         MCA="tHq-multilepton/signal_extraction/mca-thq-3l-mcdata-frdata_limits-cp.txt"
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
         BINNING="thqMVA_ttv_3l_40:thqMVA_tt_3l_40 40,-1,1,40,-1,1"
