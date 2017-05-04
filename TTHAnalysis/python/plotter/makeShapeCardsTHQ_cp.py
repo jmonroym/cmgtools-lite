@@ -195,7 +195,7 @@ class ShapeCardMaker:
                 if cp != None:
                     #print cp
                     #print 'rest is ' + rest 
-                    p1,syst = re.match(r'([0123456789]{1,})_?([\w]*)', rest).groups()
+                    p1,syst = re.match(r'([mp0123456789]{1,})_?([\w]*)', rest).groups()
                     filename = "ntuple_{proc}_{point}.root".format(proc=proc, point=p1)
                     #print 'filename is  ' + filename 
             ####################

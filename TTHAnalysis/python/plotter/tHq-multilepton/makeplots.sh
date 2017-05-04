@@ -8,6 +8,8 @@ Where plottag is one of:
  2lss-em, 2lss-em-ttcontrol
  2lss-ee, 2lss-ee-ttcontrol
 
+ ntuple_3l, ntuple_2lss
+
 And the plots will be stored in outdir/
 "
 function DONE {
@@ -213,6 +215,7 @@ case "$PLOTTAG" in
         OPTIONS="${OPTIONS} ${OPT3L}"
         # MCA="tHq-multilepton/signal_extraction/mca-thq-3l-tontuple.txt"
         MCA="tHq-multilepton/signal_extraction/mca-thq-3l-tontuple-allSM.txt"
+        #MCA="tHq-multilepton/signal_extraction/mca-thq-3l-tontuple-allSM-cp.txt"
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
         PLOTS="tHq-multilepton/plots-ntuplecontent.txt"
         SELECTPLOT=""
