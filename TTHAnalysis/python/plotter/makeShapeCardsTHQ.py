@@ -64,6 +64,36 @@ SYSTEMATICS = {
     "elLooseUnc_Dn"    : "elLooseUnc_2lss_dn",
 }
 
+
+
+TTH_SCALE = {
+    "1"    : 0.5071*0.293/0.582,
+    "0p9"  : 0.5071*0.248/0.582,
+    "0p8"  : 0.5071*0.207/0.582,
+    "0p7"  : 0.5071*0.172/0.582,
+    "0p6"  : 0.5071*0.141/0.582,
+    "0p5"  : 0.5071*0.115/0.582,
+    "0p4"  : 0.5071*0.093/0.582,
+    "0p3"  : 0.5071*0.077/0.582,
+    "0p2"  : 0.5071*0.065/0.582,
+    "0p1"  : 0.5071*0.058/0.582,
+    "0"    : 0.5071*0.055/0.582,
+    "m0p1" : 0.5071*0.058/0.582,
+    "m0p2" : 0.5071*0.065/0.582,
+    "m0p3" : 0.5071*0.077/0.582,
+    "m0p4" : 0.5071*0.093/0.582,
+    "m0p5" : 0.5071*0.115/0.582,
+    "m0p6" : 0.5071*0.141/0.582,
+    "m0p7" : 0.5071*0.172/0.582,
+    "m0p8" : 0.5071*0.207/0.582,
+    "m0p9" : 0.5071*0.248/0.582,
+    "m1"   : 0.5071*0.293/0.582,
+}
+
+
+
+
+
 def rebin2Dto1D(h, funcstring):
     nbins,fname = funcstring.split(':',1)
     func = getattr(ROOT,fname)
@@ -189,15 +219,23 @@ class ShapeCardMaker:
                     filename = "ntuple_{proc}_{point}.root".format(proc=proc, point=point)
 
                 if cp != None:
+
                     p1,syst = re.match(r'([mp0123456789]{1,})_?([\w]*)', rest).groups()
                     filename = "ntuple_{proc}_{point}.root".format(proc=proc, point=p1)
+
+            elif proc == 'ttH' and cp != None:
+
+                p1,syst = re.match(r'([mp0123456789]{1,})_?([\w]*)', rest).groups()
+                filename = "ntuple_{proc}.root".format(proc=proc)
+                weight += '*(%f)' % TTH_SCALE[p1]
 
             else:
                 filename = "ntuple_{proc}.root".format(proc=proc)
                 syst = rest
 
+
             if syst != '':
-                weight += '*(%s)' % SYSTEMATICS.get(syst)
+                weight += '*(%s)' % SYSTEMATICS[syst]
 
             if '2lss' in self.truebinname:
                 if self.truebinname == '2lss_mm': weight += '*(channel==%d)'%(13*13)
@@ -205,6 +243,7 @@ class ShapeCardMaker:
                 if self.truebinname == '2lss_ee': weight += '*(channel==%d)'%(11*11)
             
             return filename, weight
+
 
         for proc in processes:
             if self.options.verbose>2: print "...processing %s, " % proc,
@@ -809,10 +848,18 @@ if __name__ == '__main__':
                     # 'WH_hww', 'WH_htt', 'WH_hzz', 'ggH_hzz']
     for point in points:
         # Take the correct signals for this point
-        signals = ['tHq_hww_%s'%point, 'tHq_htt_%s'%point, 'tHq_hzz_%s'%point,
-                   'tHW_hww_%s'%point, 'tHW_htt_%s'%point, 'tHW_hzz_%s'%point,
-                   'ttH_hww', 'ttH_htt', 'ttH_hzz']
-                   # 'WH_hww', 'WH_htt', 'WH_hzz', 'ggH_hzz']
+
+        if options.cp == None:
+            signals = ['tHq_hww_%s'%point, 'tHq_htt_%s'%point, 'tHq_hzz_%s'%point,
+                       'tHW_hww_%s'%point, 'tHW_htt_%s'%point, 'tHW_hzz_%s'%point]
+                      #'ttH_hww_%s'%point, 'ttH_htt_%s'%point, 'ttH_hzz_%s'%point]
+                      # 'WH_hww', 'WH_htt', 'WH_hzz', 'ggH_hzz']
+       
+        if options.cp !=None:
+            signals = ['tHq_hww_%s'%point, 'tHq_htt_%s'%point, 'tHq_hzz_%s'%point,
+                       'tHW_hww_%s'%point, 'tHW_htt_%s'%point, 'tHW_hzz_%s'%point,
+                       'ttH_hww_%s'%point, 'ttH_htt_%s'%point, 'ttH_hzz_%s'%point]
+                      # 'WH_hww', 'WH_htt', 'WH_hzz', 'ggH_hzz']
 
         if options.asimov:
             cardMaker.prepareAsimov(signals=signals, backgrounds=cardMaker.mca.listBackgrounds())
@@ -823,4 +870,4 @@ if __name__ == '__main__':
         procnames = dict(zip(signals,signal_names))
         cardMaker.writeDataCard(ofilename=ofilename, procnames=procnames)
 
-    sys.exit(0)
+    sys.exit(0) 

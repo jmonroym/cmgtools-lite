@@ -20,19 +20,32 @@ def runCombineCommand(combinecmd, card, verbose=False, queue=None, submitName=No
         comboutput = None
     return comboutput
 
-def parseName(card, printout=True):
+def parseName(card, printout=True, CP=None):
     # Turn the tag into floats:
-    tag = re.match(r'.*\_([\dpm]+\_[\dpm]+).*\.card\.(txt|root)', os.path.basename(card))
+
+    tag = re.match(r'.*\_([\dpmc]+\_[\dpm]+).*\.card\.(txt|root)', os.path.basename(card))
     if tag == None:
         print "Couldn't figure out this one: %s" % card
         return
 
     tag = tag.groups()[0]
-    tagf = tag.replace('p', '.').replace('m','-')
-    cv,ct = tuple(map(float, tagf.split('_')))
-    if printout:
-        print "%-40s CV=%5.2f, Ct=%5.2f : " % (os.path.basename(card), cv, ct),
-    return cv, ct, tag
+    if 'cp' in tag:
+        tagf = tag.replace('cp','1')
+        tagf = tagf.replace('p', '.').replace('m','-')
+    else : 
+        tagf = tag.replace('p', '.').replace('m','-')
+
+    if not CP:
+        cv,ct = tuple(map(float, tagf.split('_')))
+        if printout:
+            print "%-40s CV=%5.2f, Ct=%5.2f : " % (os.path.basename(card), cv, ct),
+        return cv, ct, tag
+
+    if CP:
+        cv,cp = tuple(map(float, tagf.split('_')))
+        if printout:
+            print "%-40s CV=%5.2f, Cp=%5.2f : " % (os.path.basename(card), cv, cp),
+        return cv, cp, tag
 
 def setParamatersFreezeAll(ct,cv):
     addoptions = " --setPhysicsModelParameters kappa_t=%.2f,kappa_V=%.2f" % (ct,cv)
@@ -40,46 +53,81 @@ def setParamatersFreezeAll(ct,cv):
     addoptions += " --redefineSignalPOIs r"
     return addoptions
 
-def getLimits(card, model='K6', unblind=False, printCommand=False):
+def getLimits(card, model='K6', unblind=False, printCommand=False, CP=None):
     """
     Run combine on a single card, return a tuple of 
     (cv,ct,twosigdown,onesigdown,exp,onesigup,twosigup)
     """
-    cv,ct,tag = parseName(card)
-    if printCommand: print ""
+    if not CP: 
 
-    combinecmd =  "combine -M Asymptotic"
-    if not unblind:
-        combinecmd += " --run blind"
-    combinecmd += " -m 125 --verbose 0 -n cvct%s"%tag
-    if model in ['K4', 'K5', 'K6', 'K7']:
-        if model == 'K6': # Rescale to cv = 1, we only care about the ct/cv ratio
-            combinecmd += setParamatersFreezeAll(ct/cv,1.0)
+        cv,ct,tag = parseName(card,True, CP)
+        if printCommand: print ""
+
+        combinecmd =  "combine -M Asymptotic "
+        if not unblind:
+            combinecmd += " --run blind"
+        combinecmd += " -m 125 --verbose 0 -n cvct%s"%tag
+        if model in ['K4', 'K5', 'K6', 'K7']:
+            if model == 'K6': # Rescale to cv = 1, we only care about the ct/cv ratio
+                combinecmd += setParamatersFreezeAll(ct/cv,1.0)
+            else:
+                combinecmd += setParamatersFreezeAll(ct, cv)
+
+        comboutput = runCombineCommand(combinecmd, card, verbose=printCommand)
+
+        liminfo = {}
+        for line in comboutput.split('\n'):
+            if line.startswith('Observed Limit:'):
+                liminfo['obs'] = float(line.rsplit('<', 1)[1].strip())
+            if line.startswith('Expected'):
+                value = float(line.rsplit('<', 1)[1].strip())
+                if   'Expected  2.5%' in line: liminfo['twosigdown'] = value
+                elif 'Expected 16.0%' in line: liminfo['onesigdown'] = value
+                elif 'Expected 50.0%' in line: liminfo['exp']        = value
+                elif 'Expected 84.0%' in line: liminfo['onesigup']   = value
+                elif 'Expected 97.5%' in line: liminfo['twosigup']   = value
+
+        print "%5.2f, %5.2f, \033[92m%5.2f\033[0m, %5.2f, %5.2f" %(
+            liminfo['twosigdown'], liminfo['onesigdown'], liminfo['exp'],
+            liminfo['onesigup'], liminfo['twosigup']),
+        if 'obs' in liminfo: # Add observed limit to output, in case it's there
+            print "\033[1m %5.2f \033[0m" % (liminfo['obs'])
         else:
-            combinecmd += setParamatersFreezeAll(ct, cv)
+            print ""
+        return cv, ct, liminfo
 
-    comboutput = runCombineCommand(combinecmd, card, verbose=printCommand)
+    if CP: 
 
-    liminfo = {}
-    for line in comboutput.split('\n'):
-        if line.startswith('Observed Limit:'):
-            liminfo['obs'] = float(line.rsplit('<', 1)[1].strip())
-        if line.startswith('Expected'):
-            value = float(line.rsplit('<', 1)[1].strip())
-            if   'Expected  2.5%' in line: liminfo['twosigdown'] = value
-            elif 'Expected 16.0%' in line: liminfo['onesigdown'] = value
-            elif 'Expected 50.0%' in line: liminfo['exp']        = value
-            elif 'Expected 84.0%' in line: liminfo['onesigup']   = value
-            elif 'Expected 97.5%' in line: liminfo['twosigup']   = value
+        cv,cp,tag = parseName(card, True, CP) 
+        if printCommand: print ""
 
-    print "%5.2f, %5.2f, \033[92m%5.2f\033[0m, %5.2f, %5.2f" %(
-        liminfo['twosigdown'], liminfo['onesigdown'], liminfo['exp'],
-        liminfo['onesigup'], liminfo['twosigup']),
-    if 'obs' in liminfo: # Add observed limit to output, in case it's there
-        print "\033[1m %5.2f \033[0m" % (liminfo['obs'])
-    else:
-        print ""
-    return cv, ct, liminfo
+        combinecmd =  "combine -M Asymptotic --rAbsAcc 0.0005 --rRelAcc 0.0005 "
+        if not unblind:
+            combinecmd += " --run blind"
+        combinecmd += " -m 125 --verbose 0 -n cvcp%s"%tag
+        
+        comboutput = runCombineCommand(combinecmd, card, verbose=printCommand)
+
+        liminfo = {}
+        for line in comboutput.split('\n'):
+            if line.startswith('Observed Limit:'):
+                liminfo['obs'] = float(line.rsplit('<', 1)[1].strip())
+            if line.startswith('Expected'):
+                value = float(line.rsplit('<', 1)[1].strip())
+                if   'Expected  2.5%' in line: liminfo['twosigdown'] = value
+                elif 'Expected 16.0%' in line: liminfo['onesigdown'] = value
+                elif 'Expected 50.0%' in line: liminfo['exp']        = value
+                elif 'Expected 84.0%' in line: liminfo['onesigup']   = value
+                elif 'Expected 97.5%' in line: liminfo['twosigup']   = value
+
+        print "%5.2f, %5.2f, \033[92m%5.2f\033[0m, %5.2f, %5.2f" %(
+            liminfo['twosigdown'], liminfo['onesigdown'], liminfo['exp'],
+            liminfo['onesigup'], liminfo['twosigup']),
+        if 'obs' in liminfo: # Add observed limit to output, in case it's there
+            print "\033[1m %5.2f \033[0m" % (liminfo['obs'])
+        else:
+            print ""
+        return cv, cp, liminfo
 
 def runSMExpectedLimits(card, ntoys=100, toysfile="higgsCombine_SMtoys.GenerateOnly.mH125.123456.root",
                         queue=None,
@@ -211,29 +259,64 @@ def main(args, options):
 
     if options.runmode.lower() == 'limits':
         limdata = {} # (cv,ct) -> (2sd, 1sd, lim, 1su, 2su, [obs])
+
         for card in cards:
-            cv, ct, liminfo = getLimits(card, model=options.model,
-                                        unblind=options.unblind,
-                                        printCommand=options.printCommand)
-            limdata[(cv,ct)] = liminfo
+
+            if options.CP==None:
+
+                cv, ct, liminfo = getLimits(card, model=options.model,
+                                            unblind=options.unblind,
+                                            printCommand=options.printCommand, CP=options.CP)
+                limdata[(cv,ct)] = liminfo
+
+            if options.CP!=None:
+
+                cv, cp, liminfo = getLimits(card, model=options.model,
+                                            unblind=options.unblind,
+                                            printCommand=options.printCommand, CP=options.CP)
+                limdata[(cv,cp)] = liminfo
     
         fnames = []
-        for cv_ in [0.5, 1.0, 1.5]:
-            if not cv_ in [v for v,_ in limdata.keys()]: continue
-            csvfname = 'limits%s_cv_%s.csv' % (tag, str(cv_).replace('.','p'))
-            with open(csvfname, 'w') as csvfile:
-                if options.unblind:
-                    csvfile.write('cv,cf,twosigdown,onesigdown,exp,onesigup,twosigup,obs\n')
-                else:
-                    csvfile.write('cv,cf,twosigdown,onesigdown,exp,onesigup,twosigup\n')
-                for cv,ct in sorted(limdata.keys()):
-                    if not cv == cv_: continue
-                    values = [cv, ct]
-                    values += [limdata[(cv,ct)][x] for x in ['twosigdown','onesigdown','exp','onesigup','twosigup']]
+
+        if options.CP==None:
+
+            for cv_ in [0.5, 1.0, 1.5]:
+                if not cv_ in [v for v,_ in limdata.keys()]: continue
+                csvfname = 'limits%s_cv_%s.csv' % (tag, str(cv_).replace('.','p'))
+                with open(csvfname, 'w') as csvfile:
                     if options.unblind:
-                        values += [limdata[(cv,ct)]['obs']]
-                    csvfile.write(','.join(map(str, values)) + '\n')
-            fnames.append(csvfname)
+                        csvfile.write('cv,cf,twosigdown,onesigdown,exp,onesigup,twosigup,obs\n')
+                    else:
+                        csvfile.write('cv,cf,twosigdown,onesigdown,exp,onesigup,twosigup\n')
+                    for cv,ct in sorted(limdata.keys()):
+                        if not cv == cv_: continue
+                        values = [cv, ct]
+                        values += [limdata[(cv,ct)][x] for x in ['twosigdown','onesigdown','exp','onesigup','twosigup']]
+                        if options.unblind:
+                            values += [limdata[(cv,ct)]['obs']]
+                        csvfile.write(','.join(map(str, values)) + '\n')
+                fnames.append(csvfname)
+
+
+        if options.CP!=None:
+
+            for cv_ in [0.5, 1.0, 1.5]:
+                if not cv_ in [v for v,_ in limdata.keys()]: continue
+                csvfname = 'limits%s_cv_%s.csv' % (tag, str(cv_).replace('.','p'))
+                with open(csvfname, 'w') as csvfile:
+                    if options.unblind:
+                        csvfile.write('cv,cp,twosigdown,onesigdown,exp,onesigup,twosigup,obs\n')
+                    else:
+                        csvfile.write('cv,cp,twosigdown,onesigdown,exp,onesigup,twosigup\n')
+                    for cv,cp in sorted(limdata.keys()):
+                        if not cv == cv_: continue
+                        values = [cv, cp]
+                        values += [limdata[(cv,cp)][x] for x in ['twosigdown','onesigdown','exp','onesigup','twosigup']]
+                        if options.unblind:
+                            values += [limdata[(cv,cp)]['obs']]
+                        csvfile.write(','.join(map(str, values)) + '\n')
+                fnames.append(csvfname)
+                
         print "All done. Wrote limits to: %s" % (" ".join(fnames))
 
     if options.runmode.lower() == 'smexpected':
@@ -347,7 +430,7 @@ if __name__ == '__main__':
     cd /afs/cern.ch/user/s/stiegerb/combine/ ; cmsenv ; cd -
     """
     parser = OptionParser(usage=usage)
-    parser.add_option("-r","--run", dest="runmode", type="string", default="limit",
+    parser.add_option("-r","--run", dest="runmode", type="string", default="limits",
                       help="What to run (limits|fit|sig|smexpected)")
     parser.add_option("--toysDir", dest="toysDir",
                       type="string", default="SMlike_toys",
@@ -364,6 +447,9 @@ if __name__ == '__main__':
                       help="Print the combine command that is run")
     parser.add_option("-q","--queue", dest="queue", type="string", default=None,
                       help="For smexpected mode: submit jobs to this queue")
+    parser.add_option("--CP", dest="CP", type="string",
+                      default=None, help="run for cp phase angles")
+
     (options, args) = parser.parse_args()
 
     sys.exit(main(args, options))
