@@ -3,8 +3,7 @@ USAGE="
 makecards.sh outdir channel
 
 Where channel is one of:
- 3l, 3l_cp, 2lss_mm, 2lss_em, 2lss_ee
-
+ 3l, 3l_cp, 2lss_mm, 2lss_em, 2lss_ee, 2lss_mm_cp, 2lss_em_cp, 2lss_ee_cp
 And the cards will be stored in outdir/channel
 "
 
@@ -54,7 +53,7 @@ SYSTFILE="tHq-multilepton/signal_extraction/systsEnv.txt"
 FUNCTION="--2d-binning-function 10:tHq_MVAto1D_2lss_10"
 # FUNCTION="--2d-binning-function 10:tHq_MVAto1D_2lss_sbratio"
 # FUNCTION="--2d-binning-function 11:tHq_MVAto1D_2lss_kmeans"
-NTUPLEFOLDER="finaltrees_Jun1/2lss/"
+NTUPLEFOLDER="finaltrees_Jul12ctcpcv/2lss/"
 
 case "$CHANNEL" in
     "3l" )
@@ -63,23 +62,10 @@ case "$CHANNEL" in
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
         BINNING="thqMVA_ttv_3l_40:thqMVA_tt_3l_40 40,-1,1,40,-1,1"
         FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_10"
-        NTUPLEFOLDER="finaltrees_Jun1/3l/"
+        NTUPLEFOLDER="finaltrees_Jul12ctcpcv/3l/"
         # FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_sbratio"
         # FUNCTION="--2d-binning-function 5:tHq_MVAto1D_3l_kmeans"
         ;;
-
-    "3l_cp" )
-        OPTIONS="${OPTIONS} ${OPT3L} --xp Gstar --cp cp"
-        MCA="tHq-multilepton/signal_extraction/mca-thq-3l-mcdata-frdata_limits-cp.txt"
-        CUTS="tHq-multilepton/cuts-thq-3l.txt"
-        BINNING="thqMVA_ttv_3l_40:thqMVA_tt_3l_40 40,-1,1,40,-1,1"
-        FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_10"
-        #NTUPLEFOLDER="finaltrees_Apr21/3l_cp/"
-        NTUPLEFOLDER="finaltrees_Jun1/3l_cp/"
-        # FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_sbratio"
-        # FUNCTION="--2d-binning-function 5:tHq_MVAto1D_3l_kmeans"
-        ;;
-
     "2lss_mm" )
         OPTIONS="${OPTIONS} ${OPT2L} -E mm_chan --xp Convs --xp Gstar --xp data_flips" # remove conversions for mm channel
         ;;
@@ -89,12 +75,43 @@ case "$CHANNEL" in
     "2lss_ee" )
         OPTIONS="${OPTIONS} ${OPT2L} -E ee_chan --xp Gstar"
         ;;
+
+    "3l_cp" )
+        OPTIONS="${OPTIONS} ${OPT3L} --xp Gstar --cp cp"
+        MCA="tHq-multilepton/signal_extraction/mca-thq-3l-mcdata-frdata_limits-cp.txt"
+        CUTS="tHq-multilepton/cuts-thq-3l.txt"
+        BINNING="thqMVA_ttv_3l_40:thqMVA_tt_3l_40 40,-1,1,40,-1,1"
+        FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_10"
+        #NTUPLEFOLDER="finaltrees_Apr21/3l_cp/"
+        NTUPLEFOLDER="finaltrees_Jul12ctcpcv/3l_cp/"
+        # FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_sbratio"
+        # FUNCTION="--2d-binning-function 5:tHq_MVAto1D_3l_kmeans"
+        ;;
+    "2lss_mm_cp" )
+        OPTIONS="${OPTIONS} ${OPT2L} -E mm_chan --xp Convs --xp Gstar --cp cp --xp data_flips " # remove conversions for mm channel
+	MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits-cp.txt"
+	NTUPLEFOLDER="finaltrees_Jul12ctcpcv/2lss_cp/"
+        ;;
+    "2lss_em_cp" )
+        OPTIONS="${OPTIONS} ${OPT2L} -E em_chan --xp Gstar --cp cp"
+	MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits-cp.txt"
+	NTUPLEFOLDER="finaltrees_Jul12ctcpcv/2lss_cp/"
+        ;;
+    "2lss_ee_cp" )
+        OPTIONS="${OPTIONS} ${OPT2L} -E ee_chan --xp Gstar --cp cp"
+	MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits-cp.txt"
+	NTUPLEFOLDER="finaltrees_Jul12ctcpcv/2lss_cp/"
+        ;;
+
     "all" )
         ./$0 ${OUTNAME} 3l
-	./$0 ${OUTNAME} 3l_cp
         ./$0 ${OUTNAME} 2lss_mm
         ./$0 ${OUTNAME} 2lss_em
         ./$0 ${OUTNAME} 2lss_ee
+	./$0 ${OUTNAME} 3l_cp
+        ./$0 ${OUTNAME} 2lss_mm_cp
+        ./$0 ${OUTNAME} 2lss_em_cp
+        ./$0 ${OUTNAME} 2lss_ee_cp
         DONE
         ;;
     *)

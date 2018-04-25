@@ -254,7 +254,8 @@ case "$PLOTTAG" in
     "ntuple_3l" )
         OPTIONS="${OPTIONS} ${OPT3L}"
         # MCA="tHq-multilepton/signal_extraction/mca-thq-3l-tontuple.txt"
-        MCA="tHq-multilepton/signal_extraction/mca-thq-3l-tontuple-allSM.txt"
+        #MCA="tHq-multilepton/signal_extraction/mca-thq-3l-tontuple-allSM.txt"
+	MCA="tHq-multilepton/signal_extraction/mca-thq-3l-tontuple-allSM-ctcpcv.txt"
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
         PLOTS="tHq-multilepton/plots-ntuplecontent.txt"
         SELECTPLOT=""
@@ -296,7 +297,8 @@ case "$PLOTTAG" in
     "ntuple_2lss" )
         OPTIONS="${OPTIONS} ${OPT2L}"
         # MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-tontuple.txt"
-        MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-tontuple-allSM.txt"
+        #MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-tontuple-allSM.txt"
+	MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-tontuple-allSM-ctcpcv.txt"
         CUTS="tHq-multilepton/cuts-thq-2lss.txt"
         PLOTS="tHq-multilepton/plots-ntuplecontent.txt"
         SELECTPLOT=""
@@ -313,6 +315,28 @@ case "$PLOTTAG" in
         python mcNtuple.py ${MCA} ${CUTS} ${PLOTS} ${OUTFILE} ${OPTIONS}
         DONE
         ;;
+
+    "ntuple_2lss_cp" )
+        OPTIONS="${OPTIONS} ${OPT2L}"
+        # MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-tontuple.txt"
+        MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-tontuple-allSM-cp.txt"
+        CUTS="tHq-multilepton/cuts-thq-2lss.txt"
+        PLOTS="tHq-multilepton/plots-ntuplecontent.txt"
+        SELECTPLOT=""
+        SELECTPROCESS=""
+        OUTFILE="${OUTDIR}/ntuple_{name}.root"
+        test -d ${OUTDIR} || mkdir -p ${OUTDIR}
+
+        ARGUMENTS="${MCA} ${CUTS} ${PLOTS}"
+        OPTIONS="${TREEINPUTS} ${FRIENDTREES} ${BASEOPTIONS} ${OPTIONS} ${SELECTPLOT} ${SELECTPROCESS}"
+        echo "mca     : ${MCA}"
+        echo "cuts    : ${CUTS}"
+        echo "plots   : ${PLOTS}"
+        echo "outfiles: ${OUTFILE}"
+        python mcNtuple.py ${MCA} ${CUTS} ${PLOTS} ${OUTFILE} ${OPTIONS}
+        DONE
+        ;;
+
     "all" )
         ./$0 ${OUTDIR}/3l 3l
         ./$0 ${OUTDIR}/2lss-mm 2lss-mm
@@ -333,6 +357,7 @@ case "$PLOTTAG" in
         ./$0 ${OUTDIR}/3l ntuple_3l
         ./$0 ${OUTDIR}/3l_cp ntuple_3l_cp
         ./$0 ${OUTDIR}/2lss ntuple_2lss
+        ./$0 ${OUTDIR}/2lss_cp ntuple_2lss_cp
         DONE
         ;;
     "postfit" )

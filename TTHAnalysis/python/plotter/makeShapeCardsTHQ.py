@@ -64,30 +64,35 @@ SYSTEMATICS = {
     "elLooseUnc_Dn"    : "elLooseUnc_2lss_dn",
 }
 
-
+# since the ntuples for cp study were created with scailing to the SM, scaling to H not to bb is provided here. 
+# Sigma_hnotbb=Sigma_hbb*Br_hnotbb/Br_hbb
+# Sigma_hbb_SM=Sigma_SM*Br_hbb
+# remember "1"->SM (kt=kV=1) and "m1"-> kt=-1,kV=1   
+# additionally, rounding prevent these scales to be exactly 1 for SM 
+# so numvers are: Sigma_hnotbb*rounding_factor/(Sigma_SM*Br_hbb)  
 
 TTH_SCALE = {
-    "1"    : 0.5071*0.293/0.582,
-    "0p9"  : 0.5071*0.248/0.582,
-    "0p8"  : 0.5071*0.207/0.582,
-    "0p7"  : 0.5071*0.172/0.582,
-    "0p6"  : 0.5071*0.141/0.582,
-    "0p5"  : 0.5071*0.115/0.582,
-    "0p4"  : 0.5071*0.093/0.582,
-    "0p3"  : 0.5071*0.077/0.582,
-    "0p2"  : 0.5071*0.065/0.582,
-    "0p1"  : 0.5071*0.058/0.582,
-    "0"    : 0.5071*0.055/0.582,
-    "m0p1" : 0.5071*0.058/0.582,
-    "m0p2" : 0.5071*0.065/0.582,
-    "m0p3" : 0.5071*0.077/0.582,
-    "m0p4" : 0.5071*0.093/0.582,
-    "m0p5" : 0.5071*0.115/0.582,
-    "m0p6" : 0.5071*0.141/0.582,
-    "m0p7" : 0.5071*0.172/0.582,
-    "m0p8" : 0.5071*0.207/0.582,
-    "m0p9" : 0.5071*0.248/0.582,
-    "m1"   : 0.5071*0.293/0.582,
+    "1"    : 0.293*1.007277133105802/(0.5071*0.582), # should be 1 for SM
+    "0p9"  : 0.248*1.007277133105802/(0.5071*0.582),
+    "0p8"  : 0.207*1.007277133105802/(0.5071*0.582),
+    "0p7"  : 0.172*1.007277133105802/(0.5071*0.582),
+    "0p6"  : 0.141*1.007277133105802/(0.5071*0.582),
+    "0p5"  : 0.115*1.007277133105802/(0.5071*0.582),
+    "0p4"  : 0.093*1.007277133105802/(0.5071*0.582),
+    "0p3"  : 0.077*1.007277133105802/(0.5071*0.582),
+    "0p2"  : 0.065*1.007277133105802/(0.5071*0.582),
+    "0p1"  : 0.058*1.007277133105802/(0.5071*0.582),
+    "0"    : 0.055*1.007277133105802/(0.5071*0.582),
+    "m0p1" : 0.058*1.007277133105802/(0.5071*0.582),
+    "m0p2" : 0.065*1.007277133105802/(0.5071*0.582),
+    "m0p3" : 0.077*1.007277133105802/(0.5071*0.582),
+    "m0p4" : 0.093*1.007277133105802/(0.5071*0.582),
+    "m0p5" : 0.115*1.007277133105802/(0.5071*0.582),
+    "m0p6" : 0.141*1.007277133105802/(0.5071*0.582),
+    "m0p7" : 0.172*1.007277133105802/(0.5071*0.582),
+    "m0p8" : 0.207*1.007277133105802/(0.5071*0.582),
+    "m0p9" : 0.248*1.007277133105802/(0.5071*0.582),
+    "m1"   : 0.293*1.007277133105802/(0.5071*0.582), # should be 1 too
 }
 
 
@@ -144,6 +149,7 @@ class ShapeCardMaker:
         self.report = {}
 
         for sysfile in systsfiles:
+
             self.parseSystsFile(sysfile)
 
     def readReport(self, filename):
@@ -211,6 +217,7 @@ class ShapeCardMaker:
 
             weight = weight.format(pdgid={"hww":24, "hzz":23, "htt":15}.get(dec))
 
+
             if proc in ['tHq', 'tHW']: 
 
                 if cp == None:
@@ -223,25 +230,40 @@ class ShapeCardMaker:
                     p1,syst = re.match(r'([mp0123456789]{1,})_?([\w]*)', rest).groups()
                     filename = "ntuple_{proc}_{point}.root".format(proc=proc, point=p1)
 
-            elif proc == 'ttH' and cp != None:
+            elif proc == 'ttH':
 
-                p1,syst = re.match(r'([mp0123456789]{1,})_?([\w]*)', rest).groups()
-                filename = "ntuple_{proc}.root".format(proc=proc)
-                weight += '*(%f)' % TTH_SCALE[p1]
+                if cp != None:
+                    p1,syst = re.match(r'([mp0123456789]{1,})_?([\w]*)', rest).groups()
+                    filename = "ntuple_{proc}.root".format(proc=proc)
+                    weight += '*(%f)' % TTH_SCALE[p1]
+
+                if cp == None: 
+                    filename = "ntuple_{proc}.root".format(proc=proc)
+                    syst = rest
 
             else:
                 filename = "ntuple_{proc}.root".format(proc=proc)
                 syst = rest
 
+                print '******** this is else ***********'
+                print proc
+                print '*********************************'
+
+
 
             if syst != '':
                 weight += '*(%s)' % SYSTEMATICS[syst]
+
 
             if '2lss' in self.truebinname:
                 if self.truebinname == '2lss_mm': weight += '*(channel==%d)'%(13*13)
                 if self.truebinname == '2lss_em': weight += '*(channel==%d)'%(11*13)
                 if self.truebinname == '2lss_ee': weight += '*(channel==%d)'%(11*11)
             
+                if self.truebinname == '2lss_mm_cp': weight += '*(channel==%d)'%(13*13)
+                if self.truebinname == '2lss_em_cp': weight += '*(channel==%d)'%(11*13)
+                if self.truebinname == '2lss_ee_cp': weight += '*(channel==%d)'%(11*11)
+
             return filename, weight
 
 
@@ -688,11 +710,21 @@ class ShapeCardMaker:
 
     def writeDataCard(self, ofilename=None, procnames=None):
         if self.options.verbose: print ("...writing datacard")
+
+        print '******************************'
+        print procnames
+        print '******************************'
+
+
         myyields = {k:v for (k,v) in self.allyields.iteritems()} # doesn't this just copy the dict?
         if not os.path.exists(self.options.outdir):
             os.mkdir(self.options.outdir)
 
         procnames = procnames or dict() # use custom process names in case
+        
+        print '******************************'
+        print self.processes
+        print '******************************'
 
         ofilename = ofilename or self.binname+".card.txt"
         with open(os.path.join(self.options.outdir, ofilename), 'w') as datacard:
@@ -782,7 +814,7 @@ if __name__ == '__main__':
     parser.add_option("--od", "--outdir", dest="outdir", type="string",
                       default="shapecards/", help="output name")
     parser.add_option("-v", "--verbose", dest="verbose", type="int",
-                      default=0, help="Verbosity level (0 = quiet, 1 = verbose, 2+ = more)")
+                      default=3, help="Verbosity level (0 = quiet, 1 = verbose, 2+ = more)")
     parser.add_option("--asimov", dest="asimov", action="store_true", help="Asimov")
     parser.add_option("--2d-binning-function", dest="binfunction", type="string",
                       default=None,
