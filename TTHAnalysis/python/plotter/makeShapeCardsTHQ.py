@@ -245,12 +245,6 @@ class ShapeCardMaker:
                 filename = "ntuple_{proc}.root".format(proc=proc)
                 syst = rest
 
-                print '******** this is else ***********'
-                print proc
-                print '*********************************'
-
-
-
             if syst != '':
                 weight += '*(%s)' % SYSTEMATICS[syst]
 
@@ -711,21 +705,11 @@ class ShapeCardMaker:
     def writeDataCard(self, ofilename=None, procnames=None):
         if self.options.verbose: print ("...writing datacard")
 
-        print '******************************'
-        print procnames
-        print '******************************'
-
-
         myyields = {k:v for (k,v) in self.allyields.iteritems()} # doesn't this just copy the dict?
         if not os.path.exists(self.options.outdir):
             os.mkdir(self.options.outdir)
 
         procnames = procnames or dict() # use custom process names in case
-        
-        print '******************************'
-        print self.processes
-        print '******************************'
-
         ofilename = ofilename or self.binname+".card.txt"
         with open(os.path.join(self.options.outdir, ofilename), 'w') as datacard:
             datacard.write("## Datacard for cut file %s\n" % self.cutsfile)
@@ -883,9 +867,9 @@ if __name__ == '__main__':
 
         if options.cp == None:
             signals = ['tHq_hww_%s'%point, 'tHq_htt_%s'%point, 'tHq_hzz_%s'%point,
-                       'tHW_hww_%s'%point, 'tHW_htt_%s'%point, 'tHW_hzz_%s'%point]
-                      #'ttH_hww_%s'%point, 'ttH_htt_%s'%point, 'ttH_hzz_%s'%point]
-                      # 'WH_hww', 'WH_htt', 'WH_hzz', 'ggH_hzz']
+                       'tHW_hww_%s'%point, 'tHW_htt_%s'%point, 'tHW_hzz_%s'%point,
+                       'ttH_hww','ttH_htt','ttH_hzz']
+                     # 'WH_hww', 'WH_htt', 'WH_hzz', 'ggH_hzz']
        
         if options.cp !=None:
             signals = ['tHq_hww_%s'%point, 'tHq_htt_%s'%point, 'tHq_hzz_%s'%point,

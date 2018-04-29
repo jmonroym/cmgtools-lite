@@ -38,7 +38,7 @@ FRIENDTREES=" -F sf/t thqtrees/tHq_production_Jan25/1_thq_recleaner_240217/evVar
 " -F sf/t thqtrees/tHq_production_Jan25/5_triggerDecision_250117_v1/evVarFriend_{cname}.root"\
 " -F sf/t thqtrees/tHq_production_Jan25/6_bTagSF_v2/evVarFriend_{cname}.root"
 DRAWOPTIONS="--lspam '#bf{CMS} #it{Preliminary}' --legendFontSize 0.035"\
-" --showRatio --maxRatioRange 0 2 --fixRatioRange --showMCError"\
+" --showRatio --maxRatioRange 0 3 --fixRatioRange --showMCError"\
 
 # Pileup weight, btag SFs, trigger SFs, lepton Eff SFs:
 OPT2L="-W puw2016_nTrueInt_36fb(nTrueInt)*eventBTagSF*"\
@@ -97,16 +97,33 @@ case "$PLOTTAG" in
         DONE
         ;;
     "3l" )
-        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L}"
-        MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata-PAS.txt"
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L} --plotmode norm --ratioDen --ratioNums --ratioYLabel"
+        #MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata-PAS.txt"
+	MCA="tHq-multilepton/mca-thq-3l-signal_reweightings-allSM-samples-comp.txt"  # for comparing old and new samples (THQ and THQ_ctcvcp) 
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
         PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"
         ;;
     "3l-mvaout" )
         OPTIONS="${OPTIONS} ${OPT3L} --plotmode norm"
-        OPTIONS="${OPTIONS} --select-plot thqMVA_tt_3l,thqMVA_ttv_3l"
+        OPTIONS="${OPTIONS} --select-plot thqMVA_tt_3l_40,thqMVA_ttv_3l_40"
         OPTIONS="${OPTIONS} --xp WWss,WWDPS,VVV,tttt,tZq,ZZ,WZ"
         MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata.txt"
+        CUTS="tHq-multilepton/cuts-thq-3l.txt"
+        PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"
+        ;;
+    "3l-cp" )
+        OPTIONS="${OPTIONS} ${DRAWOPTIONS} ${OPT3L} --plotmode norm"
+        #MCA="tHq-multilepton/mca-thq-3l-mcdata-frdata-PAS.txt"
+	MCA="tHq-multilepton/mca-thq-3l-signal_reweightings-allSM-alpha-noHdecaymode.txt"
+        CUTS="tHq-multilepton/cuts-thq-3l.txt"
+        PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"
+        ;;
+    "3l-cp-mvaout" )
+        OPTIONS="${OPTIONS} ${OPT3L} --plotmode norm"
+        OPTIONS="${OPTIONS} --select-plot thqMVA_tt_3l_40,thqMVA_ttv_3l_40"
+        OPTIONS="${OPTIONS} --xp WWss,WWDPS,VVV,tttt,tZq,ZZ,WZ"
+        MCA="tHq-multilepton/mca-thq-3l-signal_reweightings-allSM-alpha-noHdecaymode.txt"
+	#MCA="tHq-multilepton/mca-thq-3l-signal_reweightings-allSM-alpha.txt"
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
         PLOTS="tHq-multilepton/plots-thq-3l-kinMVA.txt"
         ;;
@@ -156,6 +173,7 @@ case "$PLOTTAG" in
         OPTIONS="${OPTIONS} --select-plot thqMVA_tt_2lss,thqMVA_ttv_2lss"
         OPTIONS="${OPTIONS} --xp WWss,WWDPS,VVV,tttt,tZq,ZZ,WZ"
         MCA="tHq-multilepton/mca-thq-2lss-mcdata-frdata.txt"
+        #MCA="tHq-multilepton/mca-thq-2lss-mcdata-frdata-cp.txt"
         CUTS="tHq-multilepton/cuts-thq-2lss.txt"
         PLOTS="tHq-multilepton/plots-thq-2lss-kinMVA.txt"
         ;;

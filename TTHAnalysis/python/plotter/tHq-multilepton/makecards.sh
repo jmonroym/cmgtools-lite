@@ -53,7 +53,7 @@ SYSTFILE="tHq-multilepton/signal_extraction/systsEnv.txt"
 FUNCTION="--2d-binning-function 10:tHq_MVAto1D_2lss_10"
 # FUNCTION="--2d-binning-function 10:tHq_MVAto1D_2lss_sbratio"
 # FUNCTION="--2d-binning-function 11:tHq_MVAto1D_2lss_kmeans"
-NTUPLEFOLDER="finaltrees_Jul12ctcpcv/2lss/"
+NTUPLEFOLDER="finaltrees_Jul19/2lss/"
 
 case "$CHANNEL" in
     "3l" )
@@ -62,7 +62,7 @@ case "$CHANNEL" in
         CUTS="tHq-multilepton/cuts-thq-3l.txt"
         BINNING="thqMVA_ttv_3l_40:thqMVA_tt_3l_40 40,-1,1,40,-1,1"
         FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_10"
-        NTUPLEFOLDER="finaltrees_Jul12ctcpcv/3l/"
+        NTUPLEFOLDER="finaltrees_Jul19/3l/"
         # FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_sbratio"
         # FUNCTION="--2d-binning-function 5:tHq_MVAto1D_3l_kmeans"
         ;;
@@ -83,24 +83,24 @@ case "$CHANNEL" in
         BINNING="thqMVA_ttv_3l_40:thqMVA_tt_3l_40 40,-1,1,40,-1,1"
         FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_10"
         #NTUPLEFOLDER="finaltrees_Apr21/3l_cp/"
-        NTUPLEFOLDER="finaltrees_Jul12ctcpcv/3l_cp/"
+        NTUPLEFOLDER="finaltrees_Jul19/3l_cp/"
         # FUNCTION="--2d-binning-function 10:tHq_MVAto1D_3l_sbratio"
         # FUNCTION="--2d-binning-function 5:tHq_MVAto1D_3l_kmeans"
         ;;
     "2lss_mm_cp" )
         OPTIONS="${OPTIONS} ${OPT2L} -E mm_chan --xp Convs --xp Gstar --cp cp --xp data_flips " # remove conversions for mm channel
 	MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits-cp.txt"
-	NTUPLEFOLDER="finaltrees_Jul12ctcpcv/2lss_cp/"
+	NTUPLEFOLDER="finaltrees_Jul19/2lss_cp/"
         ;;
     "2lss_em_cp" )
         OPTIONS="${OPTIONS} ${OPT2L} -E em_chan --xp Gstar --cp cp"
 	MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits-cp.txt"
-	NTUPLEFOLDER="finaltrees_Jul12ctcpcv/2lss_cp/"
+	NTUPLEFOLDER="finaltrees_Jul19/2lss_cp/"
         ;;
     "2lss_ee_cp" )
         OPTIONS="${OPTIONS} ${OPT2L} -E ee_chan --xp Gstar --cp cp"
 	MCA="tHq-multilepton/signal_extraction/mca-thq-2lss-mcdata-frdata_limits-cp.txt"
-	NTUPLEFOLDER="finaltrees_Jul12ctcpcv/2lss_cp/"
+	NTUPLEFOLDER="finaltrees_Jul19/2lss_cp/"
         ;;
 
     "all" )

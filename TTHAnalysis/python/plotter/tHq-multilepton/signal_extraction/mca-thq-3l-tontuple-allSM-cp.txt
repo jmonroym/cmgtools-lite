@@ -13,7 +13,7 @@ WH+  : VHToNonbb                : xsec         : LepGood1_mcMatchId!=0 && LepGoo
 ggH+ : GGHZZ4L                  : xsec         : LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0 ; FillColor=ROOT.kOrange+6, Label='ggHZZ4L'
 
 # cv = 1.0
-tHq_1+		: THQ_ctcvcp : 9776136.0/1493.40*0.071   : LHEweight_wgt[457]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+0
+tHq_1+		: THQ_ctcvcp : 9776136.0/1493.40*0.07096 : LHEweight_wgt[457]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+0
 tHq_0p9+     	: THQ_ctcvcp : 9776136.0/1597.99*0.077   : LHEweight_wgt[514]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+10
 tHq_0p8+    	: THQ_ctcvcp : 9776136.0/1784.32*0.087   : LHEweight_wgt[513]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+10
 tHq_0p7+   	: THQ_ctcvcp : 9776136.0/2052.71*0.100   : LHEweight_wgt[512]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+10
@@ -34,7 +34,7 @@ tHq_m0p7+       : THQ_ctcvcp : 9776136.0/14435.7*0.601   : LHEweight_wgt[498]*(L
 tHq_m0p8+       : THQ_ctcvcp : 9776136.0/15936.3*0.664   : LHEweight_wgt[497]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+10
 tHq_m0p9+       : THQ_ctcvcp : 9776136.0/17518.8*0.728   : LHEweight_wgt[496]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+10
 
-tHW_1+      	: THW_ctcvcp : 4983436.0/172.045*0.016   : LHEweight_wgt[457]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+6
+tHW_1+      	: THW_ctcvcp : 4983436.0/172.045*0.01561 : LHEweight_wgt[457]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+6
 tHW_0p9+     	: THW_ctcvcp : 4983436.0/178.034*0.017   : LHEweight_wgt[514]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+6
 tHW_0p8+    	: THW_ctcvcp : 4983436.0/190.902*0.018   : LHEweight_wgt[513]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+6
 tHW_0p7+     	: THW_ctcvcp : 4983436.0/210.374*0.020   : LHEweight_wgt[512]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+6
