@@ -1,0 +1,37 @@
+# tHq/tHW signals reweighted for CP phase: _m0p9 means cV=1 and Cos(alpha)=-0.9 ; 
+# Numbers are: n_entries/sum_of_weights*cross-section (* BR for tHq (top leptonic decay)) : LHEweight (445+x with x from mg_reweight_x); 
+# here from index 496 up to index 514. These correspond to 19 steps of 0.1 in the cos(alpha) angle, which 496 being cos(alpha)=-0.9 and 514 being cos(alpha)=0.9 . 
+# For 0(1) and 180(-1) we use the other weights which are equivalent. I.e. 0 is the SM point (kt=kV=1.0, weight index 457) and 180 is the point with inverted couplings (kt=-1.0=-kV, no weight). 
+# Note: avoid using SkipMe=True here, otherwise those will be skipped in makeShapeCardsTHQ.py
+
+#tHq_new_1_m1+     : THQ_ctcvcp    : 0.794       	   	              : LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0  ;  FillColor=ROOT.kOrange+5,Label='tHq_1_m1_new'
+#tHW_new_1_m1+     : THW_ctcvcp    : 0.146  			      : LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0  ;  FillColor=ROOT.kOrange+6,Label='tHW_1_m1_new'
+#tHq_old_1_m1+      : THQ 	       : 0.07096*0.324                        : LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0  ;  FillColor=ROOT.kOrange+1,Label='tHq_1_m1_old'
+#tHW_old_1_m1+      : THW 	       : 0.01561                              : LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0  ;  FillColor=ROOT.kOrange+8,Label='tHq_1_m1_old'
+
+# cv = 1.0 old sample
+# tHq_old_1_m3+      : THQ           : 3495799.0/35.700022*0.07096*0.324	: LHEweight_wgt[446]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+0,Label='tHq_1_m3_old'
+# tHq_old_1_m2+      : THQ           : 3495799.0/20.124298*0.07096*0.324	: LHEweight_wgt[447]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+10,Label='tHq_1_m2_old'
+
+# tHq_old_1_m0p5+    : THQ           : 3495799.0/5.294518*0.07096*0.324    	: LHEweight_wgt[451]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+7,Label='tHq_1_m0p5_old'
+# tHq_old_1_m0+      : THQ 	       : 3495799.0/2.627360*0.07096*0.324  	: LHEweight_wgt[453]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+9,Label='tHq_1_m0_old'
+# tHq_old_1_0p5+     : THQ 	       : 3495799.0/1.097202*0.07096*0.324  	: LHEweight_wgt[455]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+13,Label='tHq_1_0p5_old'
+
+
+# tHq_old_1_1+       : THQ 	       : 3495799.0/0.705305*0.07096*0.324  	: LHEweight_wgt[457]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+3,Label='tHq_1_1_old'
+# tHq_old_1_2+       : THQ 	       : 3495799.0/3.335034*0.07096*0.324  	: LHEweight_wgt[460]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+16,Label='tHq_1_2_old'
+ tHq_old_1_3+       : THQ 	       : 3495799.0/10.516125*0.07096*0.324 	: LHEweight_wgt[461]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+4,Label='tHq_1_3_old'
+
+
+# cv = 1.0 new sample
+
+# tHq_new_1_m3+      : THQ_ctcvcp	: 9776136.0/75177.5*0.794 : LHEweight_wgt[446]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+2,Label='tHq_1_m3_new'
+# tHq_new_1_m2+      : THQ_ctcvcp 	: 9776136.0/42366.5*0.794 : LHEweight_wgt[447]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+9,Label='tHq_1_m2_new'
+
+# tHq_new_1_m0p5+    : THQ_ctcvcp 	: 9776136.0/11137.5*0.794 : LHEweight_wgt[451]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+8,Label='tHq_1_m0p5_new'
+# tHq_new_1_m0+      : THQ_ctcvcp 	: 9776136.0/5525.37*0.794 : LHEweight_wgt[453]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+7,Label='tHq_1_m0_new'
+# tHq_new_1_0p5+     : THQ_ctcvcp 	: 9776136.0/2309.79*0.794 : LHEweight_wgt[455]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+10,Label='tHq_1_0p5_new'
+
+# tHq_new_1_1+    	: THQ_ctcvcp 	: 9776136.0/1493.40*0.794 : LHEweight_wgt[457]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+11,Label='tHq_1_1_new'
+# tHq_new_1_2+      	: THQ_ctcvcp 	: 9776136.0/7055.60*0.794 : LHEweight_wgt[460]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+12,Label='tHq_1_2_new'
+ tHq_new_1_3+     	: THQ_ctcvcp 	: 9776136.0/22211.1*0.794 : LHEweight_wgt[461]*(LepGood1_mcMatchId!=0 && LepGood2_mcMatchId!=0 && LepGood3_mcMatchId!=0) ;  FillColor=ROOT.kOrange+13,Label='tHq_1_3_new'
