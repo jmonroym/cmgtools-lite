@@ -4,41 +4,26 @@ import re
 import sys
 import numpy as np
 from math import floor, ceil
+#from limitStatsFromCombineLogs import calculateMeanMedInterval
 
-EXPANDPRECISION = {
-    -1.33 : -1.333,
-    -0.83 : -0.833,
-    -0.67 : -0.667,
-    -0.33 : -0.333,
-    -0.17 : -0.167,
-    0.17 : 0.167,
-    0.33 : 0.333,
-    0.67 : 0.667,
-    0.83 : 0.833,
-    1.33 : 1.333,
-}
-
-def getLimitVals(logfile):
+def getLimitValsCp(logfile):
     values = []
-    kappa_t, kappa_V = None, None
+    kappa_p = None
+ 
+    match = re.match(r'job\_tHq\_cp\_([\dpmc]+)\_([\d])+\_[\d]*\.log', logfile)
+    cp = match.group(1)
+    kappa_p= float(cp.replace('p','.').replace('m','-'))
+
     with open(logfile, "r") as lfile:
         for line in lfile:
             if line.startswith("Observed Limit:"):
                 limitval = float(line.split("r < ")[1])
                 values.append(limitval)
 
-            if 'Set Default Value of Parameter kappa_t To' in line:
-                kappa_t = float(line.split(":")[1])
-            if 'Set Default Value of Parameter kappa_V To' in line:
-                kappa_V = float(line.split(":")[1])
+    if cp is None: 
+        print "failed to determine kappa_p for", logfile
 
-    if kappa_t is None or kappa_V is None:
-        print "failed to determine kappas for", logfile
-
-    ktdivkV = float("%.3f" % (kappa_t / kappa_V))
-    ktdivkV = EXPANDPRECISION.get(ktdivkV, ktdivkV)
-
-    return values, ktdivkV
+    return values, kappa_p
 
 
 def calculateMeanMedIntervals(values):
@@ -54,7 +39,6 @@ def calculateMeanMedIntervals(values):
     print "(%.4f (%.4f < r < %.4f ) %.4f)" % (lo95, lo68, hi68, hi95)
 
     return mean, median, lo68, hi68, lo95, hi95
-
 
 if __name__ == '__main__':
     """
@@ -74,40 +58,40 @@ if __name__ == '__main__':
             print "... ignoring", filename
             continue
 
-        values, ktdivkV = getLimitVals(filename)
+        values, kappa_p = getLimitValsCp(filename)
         if len(values) < 100:
             print "WARNING, found only %d limits in %s" % (len(values), filename)
 
         nfiles += 1
 
         basename = os.path.basename(filename)
-        match = re.match(r'job\_tHq\_([\dpm]+\_[\dpm]+)\_([\d])+\_[\d]*\.log', basename)
+        match = re.match(r'job\_tHq\_cp\_([\dpm]+)\_([\d])+\_[\d]*\.log', basename)
         if not match:
             print "WARNING, couldn't match filename to pattern"
-            tag, split = None, None
+            tag = None
         else:
             tag = match.group(1)
-            split = match.group(2)
 
-        # Gather up toys by kt/kV and split, but NOT by tag
-        # Toys with different tags but equal split and kt/kV are identical!
-        data.setdefault(ktdivkV, {})[split] = values
+        data.setdefault(kappa_p, {})[tag] = values
 
     # Add up the split toy results
     aggdata = {}
-    for ktdivkV, splitvalues in data.items():
+    for kappa_p, splitvalues in data.items():
         for values in splitvalues.values():
-            aggdata.setdefault(ktdivkV, []).extend(values)
+            aggdata.setdefault(kappa_p, []).extend(values)
 
-    print "Processed %d log files for %d different kt/kV values" % (nfiles, len(data.keys()))
+    print "Processed %d log files for %d different kp values" % (nfiles, len(data.keys()))
 
-    csvfilename = 'combineLogStats.csv'
+    csvfilename = 'combineLogStats_cp.csv'
     assert(not os.path.isfile(csvfilename)), 'file exists: %s' % csvfilename
     with open(csvfilename, 'w') as csvfile:
-        csvfile.write('ratio,twosigdown,onesigdown,exp,onesigup,twosigup,ntoys\n')
+        csvfile.write('cp,twosigdown,onesigdown,exp,onesigup,twosigup,ntoys\n')
 
-        for ktdivkV, values in sorted(aggdata.items()):
-            print " %4d toys for %+.3f" % (len(values), ktdivkV),
+        for kappa_p, values in sorted(aggdata.items()):
+
+            #print kappa_p
+
+            print " %4d toys for %+.3f" % (len(values), kappa_p),
             mean,median,lo68,hi68,lo95,hi95 = calculateMeanMedIntervals(values)
-            csvfile.write(','.join(map(str, [ktdivkV,lo95,lo68,median,hi68,hi95,len(values)])))
+            csvfile.write(','.join(map(str, [kappa_p,lo95,lo68,median,hi68,hi95,len(values)])))
             csvfile.write('\n')
